@@ -34,8 +34,8 @@
         "other_text_upright": false,
         "pads": {
           "drill": 0.0,
-          "height": 3.0,
-          "width": 2.0
+          "height": 0.0,
+          "width": 0.0
         },
         "silk_line_width": 0.12,
         "silk_text_italic": false,
@@ -363,7 +363,7 @@
     "last_paths": {
       "gencad": "",
       "idf": "",
-      "netlist": "badge-2.net",
+      "netlist": "badge.net",
       "specctra_dsn": "",
       "step": "",
       "vrml": ""
