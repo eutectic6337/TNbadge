@@ -1,5 +1,5 @@
 Drill report for badge.kicad_pcb
-Created on Tue 06 Dec 2022 01:04:04 PM CST
+Created on Wed 07 Dec 2022 09:55:56 AM CST
 
 Copper Layer Stackup:
     =============================================================
@@ -24,7 +24,7 @@ Drill file 'badge-PTH.drl' contains
 Drill file 'badge-NPTH.drl' contains
     unplated through holes:
     =============================================================
-    T1  0.762mm  0.0300"  (8 holes) <-- off-board, DO NOT ATTEMPT TO DRILL
+    T1  0.762mm  0.0300"  (8 holes)
     T2  2.700mm  0.1063"  (8 holes)
 
     Total unplated holes count 16
