@@ -1,0 +1,19 @@
+Id;Designator;Package;Quantity;Designation;Supplier and ref
+1;R9,R10;R_2010_5025Metric_Pad1.40x2.65mm_HandSolder;2;100k;lcsc.com/product-detail/_VO-_C3018350.html,SCR2010J100K
+2;D2,D1,D4,D5,D3;LED-APA102-2020;5;APA102;aliexpress.com/item/2251832665711027.html
+3;J1,J1,J1;IDC-Header_2x03_P2.54mm_Vertical;3;SAO V.1.69bis master;aliexpress.com/item/2251832874579437.html
+4;U2,U2,U2,U2;MH-ET_epaper_ 2.13;4;MH-ET_epaper_ 2.13;aliexpress.com/item/3256803898542103.html,2.13 inch,Red+Black
+5;R3,R6,R4,R1,R5,R7;R_2010_5025Metric_Pad1.40x2.65mm_HandSolder;6;10k;lcsc.com/product-detail/_VO-_C3018304.html,SCR2010J10K
+6;R11;R_2010_5025Metric_Pad1.40x2.65mm_HandSolder;1;150;lcsc.com/product-detail/_VO-_C3018303.html,SCR2010J150R
+7;C1,C2;C_1206_3216Metric_Pad1.33x1.80mm_HandSolder;2;10n;12063A103JAT2A
+8;D6;LED_D5.0mm;1;LED;
+9;R2;R_LDR_5.1x4.3mm_P3.4mm_Vertical;1;LDR07;P1241-05
+10;BT1;JST_PH_S2B-PH-SM4-TB_1x02-1MP_P2.00mm_Horizontal;1;Battery;aliexpress.com/item/2255800499298414.html,2pin
+11;SW1;MSS-22D18G2 hand-solderable;1;power;aliexpress.com/item/2255799844067525.html
+12;Q1;SOT-23;1;BSS138;aliexpress.com/item/3256803487814182.html
+13;SW3;MSS-22D18G2 hand-solderable;1;update epaper;aliexpress.com/item/2255799844067525.html
+14;U3;boost converter module;1;5V boost converter;aliexpress.com/item/3256801453688823.html
+15;SW2;SW_SPST_SKQG_WithoutStem;1;SW_Push;aliexpress.com/item/2251832616067755.html,SKQGABE010
+16;U4;TSSOP-14_4.4x5mm_P0.65mm;1;TXS0104EPWR;aliexpress.com/item/2251832541429715.html,TXS0104EPWR
+17;U1;Seeed XIAO ESP32-C3 hand-solderable;1;Seeed XIAO ESP32-C3;seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html
+;;523450 LiPo battery;1;;aliexpress.com/item/3256803012248557.html
