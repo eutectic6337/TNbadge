@@ -2,14 +2,18 @@
 
 A blinky-light badge in the approximate shape of Tennessee
 
+Firmware will be available in [its own repository](https://github.com/eutectic6337/TNbadge-firmware) once it exists.
+
 ## Features
 
 ### human-accessible output
-5 of addressable RGB LED (APA102) at the approximate locations of the top 5 population centres (west to east: Memphis, Clarksville, Nashville, Chattanooga, Knoxville)
+5 of addressable RGB LED (APA102) at the approximate locations of the top 5 population centres
+(west to east: Memphis, Clarksville, Nashville, Chattanooga, Knoxville)
 
 1 of user-populated LED-footprint, MOSFET-switched 5V supply with current-limiting resistor
 
-1 of 212x104 pixel epaper display (grey/black, or grey/black/red), populated at any of 4 locations
+1 of 212x104 pixel epaper display (grey/black, or grey/black/red), populated at either of 2 locations
+(one almost entirely on-board; one almost entirely off-board and mounted from behind to not obscure Chattanooga's LED)
 
 
 ### human-accessible input
@@ -18,7 +22,7 @@ A blinky-light badge in the approximate shape of Tennessee
 1 of pushbutton digital input
 
 ### electronic
-1 .. 3 of SAO V.1.69bis master connector, populated at any of 3 locations not obstructed by epaper
+1 .. 3 of SAO V.1.69bis master connector, populated at any of 4 locations not obstructed by epaper
 
 USB-C for power and programming
 
@@ -35,9 +39,9 @@ display / LED enable switch
 and encourage this by having LED power mutually exclusive with epaper power)
 
 ## design considerations
-minimal components on top allowing maximum space for silkscreen art
+minimal components on front allowing maximum space for silkscreen art
 
-full GND-connected fill on both top and bottom for even background under soldermask
+maximal GND-connected fill on both top and bottom for even background under soldermask
 
 flat empty space on back for LiPo battery to rest snug against PCB
 
