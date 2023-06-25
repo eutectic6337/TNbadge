@@ -5,7 +5,7 @@ Id;Designator;Package;Quantity;Designation;Supplier and ref
 4;U2;MH-ET_epaper_ 2.13;1;MH-ET_epaper_ 2.13;aliexpress.com/item/3256803898542103.html,2.13 inch,Red+Black
 5;R3,R6,R4,R1,R5,R7;R_2010_5025Metric_Pad1.40x2.65mm_HandSolder;6;10k;lcsc.com/product-detail/_VO-_C3018304.html,SCR2010J10K
 6;R11;R_2010_5025Metric_Pad1.40x2.65mm_HandSolder;1;150;lcsc.com/product-detail/_VO-_C3018303.html,SCR2010J150R
-7;C41,C1,C4,C2,C3,C5,C42;C_1206_3216Metric_Pad1.33x1.80mm_HandSolder;7;10n;12063A103JAT2A
+7;C41,C1,C4,C2,C3,C5,C42;C_1206_3216Metric_Pad1.33x1.80mm_HandSolder;7;1u;CCTC TCC1206X7R105M500HT
 8;D6;LED_D5.0mm;1;LED;
 9;R2;R_LDR_5.1x4.3mm_P3.4mm_Vertical;1;LDR07;P1241-05
 10;BT1;JST_PH_S2B-PH-SM4-TB_1x02-1MP_P2.00mm_Horizontal;1;Battery;aliexpress.com/item/2255800499298414.html,2pin
