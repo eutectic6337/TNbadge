@@ -2,8 +2,6 @@
 
 A blinky-light badge in the approximate shape of Tennessee
 
-Firmware will be available in [its own repository](https://github.com/eutectic6337/TNbadge-firmware) once it exists.
-
 [Join the Tennessee Cybersecurity Discord](https://discord.gg/tninfosec) and
 [participate in discussion about this badge](https://discord.com/channels/781280955667185686/1010244036612862144).
 
