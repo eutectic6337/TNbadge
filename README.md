@@ -8,47 +8,54 @@ A blinky-light badge in the approximate shape of Tennessee
 ## Features
 
 ### human-accessible output
-5 of addressable RGB LED (APA102) at the approximate locations of the top 5 population centres
-(west to east: Memphis, Clarksville, Nashville, Chattanooga, Knoxville)
+- 5 of addressable RGB LED (APA102) at the approximate locations of the top 5 population centres
+(west to east: Memphis, Clarksville, Nashville, Chattanooga, Knoxville)  
+on-chip SPI (SCLK from pin 9 (D8/G8), MOSI from pin 11 (D10/G10))
 
-1 of user-populated LED-footprint, MOSFET-switched 5V supply with current-limiting resistor
+- 1 of user-populated LED-footprint, MOSFET-switched 5V supply with current-limiting resistor  
+from pin 7 (D6/G21)
 
-1 of 212x104 pixel epaper display (grey/black, or grey/black/red), populated at either of 2 locations
-(one almost entirely on-board; one almost entirely off-board and mounted from behind to not obscure Chattanooga's LED)
+- 1 of 212x104 pixel epaper display (grey/black, or grey/black/red), populated at either of 2 locations
+(one almost entirely on-board; one almost entirely off-board and mounted from behind to not obscure Chattanooga's LED)  
+on-chip SPI, /CS from pin 8 (D7/G20), DATA/CMD from pin 2 (D1/G3), /RESET from pin 7 (D6/G21), BUSY to pin 1 (D0/G2)
 
 
 ### human-accessible input
-1 of LDR, darkness-proportional voltage at ADC
+- 1 of LDR, darkness-proportional voltage at ADC  
+to pin 3 (A2/D2/G4)
 
-1 of pushbutton digital input
+- 1 of pushbutton digital input
+
 
 ### electronic
-1 .. 3 of SAO V.1.69bis master connector, populated at any of 4 locations not obstructed by epaper
+- 1 .. 3 of SAO V.1.69bis master connector, populated at any of 4 locations not obstructed by epaper  
+on-chip I2C (SCL on pin 6 (D5/G7), SDA on pin 5 (D4/G6)), GPIO1 on pin 2 (D1/G3), GPIO2 on pin 1 (D0/G2)
 
-USB-C for power and programming
+- USB-C for power and programming
 
-1000mAh LiPo battery
+- 1000mAh LiPo battery
 
-battery voltage /2 at ADC
+- battery voltage /2 at ADC  
+to pin 4 (A3/D3/G5)
 
-Bluetooth Low Energy / WiFi
+- on-chip Bluetooth Low Energy / WiFi
 
-power ON/OFF switch
+- power ON/OFF switch
 
-display / LED enable switch
+- epaper display / LED enable switch  
 (to maximize epaper lifetime by disconnecting power other than when required for update,
 and encourage this by having LED power mutually exclusive with epaper power)
 
 ## design considerations
-minimal components on front allowing maximum space for silkscreen art
+- minimal components on front allowing maximum space for silkscreen art
 
-maximal GND-connected fill on both top and bottom for even background under soldermask
+- maximal GND-connected fill on both top and bottom for even background under soldermask (and to reduce electrical noise)
 
-flat empty space on back for LiPo battery to rest snug against PCB
+- flat empty space on back for LiPo battery to rest snug against PCB
 
-maximum flexibility for user customization
+- maximum flexibility for user customization, both physical and logical
 
-components chosen (and footprints customized) for hand-solderability where possible
+- components chosen (and footprints customized) for hand-solderability where possible
 
 ## software
 still to come
