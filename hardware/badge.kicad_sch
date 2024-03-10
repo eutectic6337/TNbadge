@@ -5538,7 +5538,7 @@
 		)
 		(uuid "293e9be9-8bbb-4384-be40-dd57c9083763")
 	)
-	(label "MISO{slash}Vbutton1"
+	(label "Vbutton1"
 		(at 100.33 135.89 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5791,7 +5791,7 @@
 		)
 		(uuid "c3c1c1d7-7662-4fe3-8e53-abb0e23464c6")
 	)
-	(label "MISO{slash}Vbutton1"
+	(label "Vbutton1"
 		(at 127 53.34 0)
 		(fields_autoplaced yes)
 		(effects
