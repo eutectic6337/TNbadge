@@ -7189,7 +7189,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED-APA102-2020"
+		(property "Footprint" "extra:LED-APA102-2020"
 			(at 238.76 96.52 0)
 			(effects
 				(font
@@ -9537,7 +9537,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED-APA102-2020"
+		(property "Footprint" "extra:LED-APA102-2020"
 			(at 208.28 96.52 0)
 			(effects
 				(font
@@ -9824,7 +9824,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED-APA102-2020"
+		(property "Footprint" "extra:LED-APA102-2020"
 			(at 254 96.52 0)
 			(effects
 				(font
@@ -10521,7 +10521,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED-APA102-2020"
+		(property "Footprint" "extra:LED-APA102-2020"
 			(at 269.24 96.52 0)
 			(effects
 				(font
@@ -10809,7 +10809,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED-APA102-2020"
+		(property "Footprint" "extra:LED-APA102-2020"
 			(at 223.52 96.52 0)
 			(effects
 				(font
@@ -11009,7 +11009,7 @@
 		(fields_autoplaced yes)
 		(uuid "e2a27402-e1eb-43f7-b86b-fd78fb60fa8b")
 		(property "Reference" "TP2"
-			(at 77.47 73.9775 0)
+			(at 77.47 73.3424 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11017,8 +11017,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "3.8V"
-			(at 77.47 76.5175 0)
+		(property "Value" "4.1V"
+			(at 77.47 75.8824 0)
 			(effects
 				(font
 					(size 1.27 1.27)
