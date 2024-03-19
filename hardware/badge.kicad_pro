@@ -512,7 +512,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "badge.net",
-      "plot": "",
+      "plot": "fab/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
