@@ -11184,25 +11184,24 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "db202e39-88d7-4ad6-bd52-92f0f0e3b9ae")
 		(property "Reference" "D7"
-			(at 119.38 77.47 0)
+			(at 119.126 81.026 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "1N4007WS"
-			(at 119.38 80.01 0)
+		(property "Value" "SM4007PL A7 46MIL"
+			(at 118.11 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-323_HandSoldering"
+		(property "Footprint" "Diode_SMD:D_SOD-123F"
 			(at 119.38 83.82 0)
 			(effects
 				(font
@@ -11211,7 +11210,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2201251830_YFW-1N4007WS_C2898417.pdf"
+		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2111101130_YONGYUTAI-SM4007PL-A7-46MIL_C2916249.pdf"
 			(at 119.38 83.82 0)
 			(effects
 				(font
@@ -11486,7 +11485,7 @@
 		(dnp no)
 		(uuid "ebf14fa8-2847-4e7e-9187-a3d0e341704b")
 		(property "Reference" "SW3"
-			(at 106.68 76.2 0)
+			(at 106.68 75.438 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11494,7 +11493,7 @@
 			)
 		)
 		(property "Value" "update epaper"
-			(at 106.68 78.74 0)
+			(at 106.68 77.978 0)
 			(effects
 				(font
 					(size 1.27 1.27)
