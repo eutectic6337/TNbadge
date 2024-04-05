@@ -5120,7 +5120,7 @@
 		)
 		(uuid "23c5b2b1-419e-475b-a923-dbce022f99ce")
 	)
-	(label "Vbutton1"
+	(label "Vbutton"
 		(at 100.33 135.89 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5384,7 +5384,7 @@
 		)
 		(uuid "c3c1c1d7-7662-4fe3-8e53-abb0e23464c6")
 	)
-	(label "Vbutton1"
+	(label "Vbutton"
 		(at 127 53.34 0)
 		(fields_autoplaced yes)
 		(effects

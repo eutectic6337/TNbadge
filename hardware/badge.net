@@ -1,7 +1,7 @@
 (export (version "E")
   (design
     (source "/home/mlp/Documents/dc615/TNbadge/hardware/badge.kicad_sch")
-    (date "2024-04-05T12:23:15-0500")
+    (date "2024-04-05T17:25:40-0500")
     (tool "Eeschema 8.0.1")
     (sheet (number "1") (name "/") (tstamps "/")
       (title_block
@@ -1090,7 +1090,7 @@
       (node (ref "J1") (pin "3") (pinfunction "SDA") (pintype "bidirectional"))
       (node (ref "R5") (pin "2") (pintype "passive"))
       (node (ref "U1") (pin "5") (pinfunction "G6_SDA_D4") (pintype "unspecified")))
-    (net (code "20") (name "/Vbutton1")
+    (net (code "20") (name "/Vbutton")
       (node (ref "R3") (pin "2") (pintype "passive"))
       (node (ref "SW2") (pin "2") (pinfunction "2") (pintype "passive"))
       (node (ref "U1") (pin "10") (pinfunction "G9_MISO_D9") (pintype "unspecified")))
