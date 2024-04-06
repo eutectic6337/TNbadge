@@ -4814,16 +4814,6 @@
 	)
 	(wire
 		(pts
-			(xy 209.55 52.07) (xy 209.55 49.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cff3e42f-cdcc-4216-aaea-fa90154d736e")
-	)
-	(wire
-		(pts
 			(xy 147.32 77.47) (xy 147.32 81.28)
 		)
 		(stroke
@@ -4861,6 +4851,16 @@
 			(type default)
 		)
 		(uuid "d564210c-774a-418d-b915-7b267543ccac")
+	)
+	(wire
+		(pts
+			(xy 231.14 49.53) (xy 243.84 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d635aa84-bdc1-4fbd-8208-2d715d368495")
 	)
 	(wire
 		(pts
@@ -4954,16 +4954,6 @@
 	)
 	(wire
 		(pts
-			(xy 209.55 49.53) (xy 243.84 49.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ebbb4401-1657-41f2-ae85-7643474ebd3a")
-	)
-	(wire
-		(pts
 			(xy 223.52 139.7) (xy 232.41 139.7)
 		)
 		(stroke
@@ -5032,7 +5022,7 @@
 		)
 		(uuid "fe0614d9-e715-4785-8d30-9d4172283301")
 	)
-	(label "OE"
+	(label "OE{slash}cs"
 		(at 127 60.96 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5164,7 +5154,7 @@
 		)
 		(uuid "394cf0e4-711e-4dc7-bf0d-c978732b744c")
 	)
-	(label "OE"
+	(label "OE{slash}cs"
 		(at 147.32 111.76 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5196,6 +5186,17 @@
 			(justify left bottom)
 		)
 		(uuid "4e59d286-4848-410b-b130-c2edf563a53f")
+	)
+	(label "OE{slash}cs"
+		(at 231.14 49.53 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5a3f9f33-bb44-4c50-8442-528ce8f102b2")
 	)
 	(label "GPIO1{slash}DC"
 		(at 59.69 41.91 0)
@@ -8369,7 +8370,7 @@
 				)
 			)
 		)
-		(property "Value" "SAO V.1.69bis master"
+		(property "Value" "SAO V.1.69bis host"
 			(at 245.11 130.81 0)
 			(effects
 				(font
@@ -10280,72 +10281,6 @@
 			(project "badge"
 				(path "/86e9ced6-67f5-4007-880a-280020fc259e"
 					(reference "#PWR08")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 209.55 52.07 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "e175ad10-405f-4843-8e86-d1d1512bf39d")
-		(property "Reference" "#PWR01"
-			(at 209.55 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 209.55 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 209.55 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 209.55 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 209.55 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e8403054-3884-4a2f-97de-5b4f8e86bf75")
-		)
-		(instances
-			(project "badge"
-				(path "/86e9ced6-67f5-4007-880a-280020fc259e"
-					(reference "#PWR01")
 					(unit 1)
 				)
 			)
