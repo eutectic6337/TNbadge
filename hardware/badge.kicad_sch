@@ -5022,7 +5022,26 @@
 		)
 		(uuid "fe0614d9-e715-4785-8d30-9d4172283301")
 	)
-	(label "OE{slash}cs"
+	(text_box "light 2k5\ndark 35k"
+		(exclude_from_sim no)
+		(at 48.26 143.51 0)
+		(size 11.43 6.35)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "cbda1ac3-a8fb-475f-98a1-532c4b3d6e46")
+	)
+	(label "OE"
 		(at 127 60.96 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5055,7 +5074,7 @@
 		)
 		(uuid "0b82ee75-6978-4bc3-ba35-06a0e323ba0b")
 	)
-	(label "Vdark"
+	(label "Vdark{slash}cs"
 		(at 59.69 49.53 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5154,7 +5173,7 @@
 		)
 		(uuid "394cf0e4-711e-4dc7-bf0d-c978732b744c")
 	)
-	(label "OE{slash}cs"
+	(label "OE"
 		(at 147.32 111.76 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5187,7 +5206,7 @@
 		)
 		(uuid "4e59d286-4848-410b-b130-c2edf563a53f")
 	)
-	(label "OE{slash}cs"
+	(label "Vdark{slash}cs"
 		(at 231.14 49.53 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5308,7 +5327,7 @@
 		)
 		(uuid "9f259e3c-db3b-4766-b911-9bf5cf00275c")
 	)
-	(label "Vdark"
+	(label "Vdark{slash}cs"
 		(at 48.26 135.89 0)
 		(fields_autoplaced yes)
 		(effects
