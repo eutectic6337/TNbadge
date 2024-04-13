@@ -48,40 +48,44 @@ void update_SAOs()
 
 //human input - pushbutton
 Digital_Input pushbutton = D9;//10; //D9 (Vbutton)
-const Time PUSHBUTTON_DEBOUNCE_ms = 20;
-Time pushbutton_debounce_until;
-unsigned pushbutton_prev = 0;
 unsigned pushbutton_debounced = 1;
 void setup_pushbutton() {
   pinMode(pushbutton, INPUT);
-  pushbutton_debounce_until = millis() + PUSHBUTTON_DEBOUNCE_ms;
 }
 void update_pushbutton() {
-  if (digitalRead(pushButton) != pushbutton_prev) {
-    pushbutton_prev = !pushbutton_prev;
-    pushbutton_debounce_until = millis() + PUSHBUTTON_DEBOUNCE_ms;
+  const Time PUSHBUTTON_DEBOUNCE_ms = 20;
+  static Time debounce_until;
+  static unsigned prev = 0;
+
+  if (digitalRead(pushButton) != prev) {
+    prev = !prev;
+    debounce_until = millis() + PUSHBUTTON_DEBOUNCE_ms;
   }
-  else if (millis() >= pushbutton_debounce_until) {
-    pushbutton_debounced = pushbutton_prev;
+  else if (millis() >= debounce_until) {
+    pushbutton_debounced = prev;
   }
 }
 
+// IDEA: hold pushbutton down for 5s -> go into deep sleep, wake up on button press
+// see deep-sleep sample at https://wiki.seeedstudio.com/XIAO_ESP32C3_Getting_Started/
+// DOWNER: only D0..D3 supported for wakeup; could use a SAO GPIO, though.
+
 //environmental/status input - lightdark sensor
 Analog_Input lightdark_sensor = A2;//3; //A2 (Vdark)
-const Time LIGHTDARK_READING_ms = 20;
-const unsigned LIGHTDARK_SMOOTH = 16;
-Time lightdark_wait_for_read;
 unsigned lightdark_smoothed;
 void setup_lightdark_sensor() {
   pinMode(lightdark_sensor, INPUT);
-  lightdark_wait_for_read = millis() + LIGHTDARK_READING_ms;
 }
 void update_lightdark_sensor() {
+  const Time LIGHTDARK_READING_ms = 20;
+  const unsigned LIGHTDARK_SMOOTH = 16;
+  static Time wait_for_read;
+
   static unsigned raw[LIGHTDARK_SMOOTH] = {0};
   static unsigned long sum = 0;
   static unsigned samples = 0;
 
-  if (millis() >= lightdark_wait_for_read) {
+  if (millis() >= wait_for_read) {
     sum -= raw[LIGHTDARK_SMOOTH-1];
     if (samples < LIGHTDARK_SMOOTH) {
       samples++;
@@ -97,28 +101,20 @@ void update_lightdark_sensor() {
 
 //environmental/status input - battery monitor
 Analog_Input half_battery_voltage = 4; //A3 (Vmeasure)
-const Time BATTERY_READING_ms = 50;
-const unsigned BATTERY_SMOOTH = 8;
-Time battery_wait_for_read;
-unsigned battery_smoothed;
-
-const unsigned long THOUSAND = 1000;
-const unsigned long MILLION = THOUSAND * THOUSAND;
-const unsigned long BILLION = MILLION * THOUSAND;
-unsigned short battery_millivolts;
-unsigned long battery_microvolts;
-unsigned long battery_nanovolts;
-
+unsigned long battery_millivolts;
 void setup_battery_monitor() {
   pinMode(half_battery_voltage, INPUT);
-  battery_wait_for_read = millis() + BATTERY_READING_ms;
 }
 void update_battery_monitor() {
+  const Time BATTERY_READING_ms = 50;
+  const unsigned BATTERY_SMOOTH = 8;
+  static Time wait_for_read;
+
   static unsigned raw[BATTERY_SMOOTH] = {0};
   static unsigned long sum = 0;
   static unsigned samples = 0;
 
-  if (millis() >= battery_wait_for_read) {
+  if (millis() >= wait_for_read) {
     sum -= raw[BATTERY_SMOOTH-1];
     if (samples < BATTERY_SMOOTH) {
       samples++;
@@ -126,25 +122,71 @@ void update_battery_monitor() {
     for (int i = 1; i < samples; i++) {
       raw[i] = raw[i-1];
     }
-    raw[0] = analogRead(half_battery_voltage);
+    raw[0] = alalogReadMilliVolts(half_battery_voltage);
     sum += raw[0];
-    battery_smoothed = sum/samples;
+    battery_millivolts = sum/samples *2;
   }
 }
 
 //blinky outputs - single LED
 Digital_Output level_shifter_OE = 8; //GPIO20
 Digital_Output single_LED = 7; //GPIO21
+const Time LED_BRIGHTEN_ms = 50; // per ramp-up step
+const unsigned LED_FULL = 250;
+const Time LED_FULL_ms = 1000
+const Time LED_DIMMING_ms = 5;
+const unsigned LED_DARK = 10; // per ramp-down step
+const Time LED_DARK_ms = 2000;
 void setup_single_LED() {
   pinmode(single_LED, OUTPUT);
 }
 void update_single_LED() {
   // ======== CUSTOMIZE HERE ========
-  digitalWrite(Single_LED, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(1000);                      // wait for a second
-  digitalWrite(Single_LED, LOW);   // turn the LED off by making the voltage LOW
-  delay(1000);                      // wait for a second
+  static unsigned fadeValue;
+  static Time next_action;
+  static enum {brightening, full, dimming, dark} state;
 
+  switch (state) {
+  case brightening:
+    if (millis() >= next_action) {
+      next_action = millis() + LED_BRIGHTEN_ms;
+      if (fadeValue < LED_FULL) {
+        fadeValue++;
+        analogWrite(single_LED, fadeValue);
+      }
+      else {
+        state = full;
+      }
+    }
+    break;
+
+  case full:
+    if (millis() >= next_action) {
+      next_action = millis() + LED_FULL_ms;
+      state = dimming;
+    }
+    break;
+
+  case dimming:
+    if (millis() >= next_action) {
+      next_action = millis() + LED_DIMMING_ms;
+      if (fadeValue > LED_DARK) {
+        fadeValue--;
+        analogWrite(single_LED, fadeValue);
+      }
+      else {
+        state = dark;
+      }
+    }
+    break;
+
+  case dark:
+    if (millis() >= next_action) {
+      next_action = millis() + LED_DARK_ms;
+      state = brightening;
+    }
+    break;
+  }
 }
 
 //blinky outputs - city smartLEDs
