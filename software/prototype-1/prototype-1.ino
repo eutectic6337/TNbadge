@@ -29,10 +29,10 @@ const unsigned long SERIAL_SPEED = 57600;
 // functions on board:
 
 //Shitty Add-On v1.69bis (https://hackaday.com/2019/03/20/introducing-the-shitty-add-on-v1-69bis-standard/)
-GPIO SAO_GPIO1 = D1;//2; //GPIO3, D1, A1
-GPIO SAO_GPIO2 = D0;//1; //GPIO2, D0, A0
-GPIO SAO_SDA = D4;//5; //SDA
-GPIO SAO_SCL = D5;//6; //SCL
+GPIO SAO_GPIO1 = D1;//2 GPIO3/A1
+GPIO SAO_GPIO2 = D0;//1 GPIO2/A0
+GPIO SAO_SDA = D4;//5 SDA
+GPIO SAO_SCL = D5;//6 SCL
 void setup_SAOs()
 {
   // ======== CUSTOMIZE HERE ========
@@ -47,7 +47,7 @@ void update_SAOs()
 }
 
 //human input - pushbutton
-Digital_Input pushbutton = D9;//10; //D9 (Vbutton)
+Digital_Input pushbutton = D9;//10 (Vbutton)
 unsigned pushbutton_debounced = 1;
 void setup_pushbutton() {
   pinMode(pushbutton, INPUT);
@@ -71,7 +71,7 @@ void update_pushbutton() {
 // DOWNER: only D0..D3 supported for wakeup; could use a SAO GPIO, though.
 
 //environmental/status input - lightdark sensor
-Analog_Input lightdark_sensor = A2;//3; //A2 (Vdark)
+Analog_Input lightdark_sensor = A2;//3 (Vdark)
 unsigned lightdark_smoothed;
 void setup_lightdark_sensor() {
   pinMode(lightdark_sensor, INPUT);
@@ -100,7 +100,7 @@ void update_lightdark_sensor() {
 }
 
 //environmental/status input - battery monitor
-Analog_Input half_battery_voltage = 4; //A3 (Vmeasure)
+Analog_Input half_battery_voltage = A3;//4 (Vmeasure)
 unsigned long battery_millivolts;
 void setup_battery_monitor() {
   pinMode(half_battery_voltage, INPUT);
@@ -129,19 +129,19 @@ void update_battery_monitor() {
 }
 
 //blinky outputs - single LED
-Digital_Output level_shifter_OE = 8; //GPIO20
-Digital_Output single_LED = 7; //GPIO21
+Digital_Output level_shifter_OE = D7;//8
+Digital_Output single_LED = D6;//7
 void setup_single_LED() {
   pinmode(single_LED, OUTPUT);
 }
 void update_single_LED() {
   // ======== CUSTOMIZE HERE ========
   const Time LED_BRIGHTEN_ms = 50; // per ramp-up step
-  const unsigned LED_FULL = 250;
-  const Time LED_FULL_ms = 1000
-  const Time LED_DIMMING_ms = 5;
-  const unsigned LED_DARK = 10; // per ramp-down step
-  const Time LED_DARK_ms = 2000;
+  const unsigned LED_FULL = 200;
+  const Time LED_FULL_ms = 100
+  const Time LED_DIMMING_ms = 40;
+  const unsigned LED_DARK = 50; // per ramp-down step
+  const Time LED_DARK_ms = 200;
 
   static unsigned fadeValue;
   static Time next_action;
@@ -193,8 +193,8 @@ enum LED_city_indices {
   LED_Memphis, LED_Clarkesville, LED_Nashville, LED_Chattanooga, LED_Knoxville,
   NUM_SMART_LEDS
 }
-Digital_Output smart_LED_data = 11; //MOSI
-Digital_Output smart_LED_clock = 9; //SCK
+Digital_Output smart_LED_data = D10;//11 MOSI
+Digital_Output smart_LED_clock = D8;//9 SCK
 #include <FastLED.h>
 CRGB leds[NUM_SMART_LEDS];
 void setup_city_smartLEDs() {
