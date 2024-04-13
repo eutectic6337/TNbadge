@@ -7,7 +7,7 @@
 //
 // NOTES FOR BADGE WEARERS
 //
-// 1. each customization location is marked
+// 1. each intended customization location is marked
 //    "// ======== CUSTOMIZE HERE ========"
 //
 // 2. each feature uses a state machine,
@@ -131,17 +131,18 @@ void update_battery_monitor() {
 //blinky outputs - single LED
 Digital_Output level_shifter_OE = 8; //GPIO20
 Digital_Output single_LED = 7; //GPIO21
-const Time LED_BRIGHTEN_ms = 50; // per ramp-up step
-const unsigned LED_FULL = 250;
-const Time LED_FULL_ms = 1000
-const Time LED_DIMMING_ms = 5;
-const unsigned LED_DARK = 10; // per ramp-down step
-const Time LED_DARK_ms = 2000;
 void setup_single_LED() {
   pinmode(single_LED, OUTPUT);
 }
 void update_single_LED() {
   // ======== CUSTOMIZE HERE ========
+  const Time LED_BRIGHTEN_ms = 50; // per ramp-up step
+  const unsigned LED_FULL = 250;
+  const Time LED_FULL_ms = 1000
+  const Time LED_DIMMING_ms = 5;
+  const unsigned LED_DARK = 10; // per ramp-down step
+  const Time LED_DARK_ms = 2000;
+
   static unsigned fadeValue;
   static Time next_action;
   static enum {brightening, full, dimming, dark} state;
@@ -153,10 +154,9 @@ void update_single_LED() {
       if (fadeValue < LED_FULL) {
         fadeValue++;
         analogWrite(single_LED, fadeValue);
+        break;
       }
-      else {
-        state = full;
-      }
+      state = full;
     }
     break;
 
@@ -173,10 +173,9 @@ void update_single_LED() {
       if (fadeValue > LED_DARK) {
         fadeValue--;
         analogWrite(single_LED, fadeValue);
+        break;
       }
-      else {
-        state = dark;
-      }
+      state = dark;
     }
     break;
 
