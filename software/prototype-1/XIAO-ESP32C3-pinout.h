@@ -1,6 +1,10 @@
 #ifndef XIAO_ESP32C3_PINOUT_H_
 #define XIAO_ESP32C3_PINOUT_H_
 
+/*
+  GPIO*n* is (from Arduino's PoV) pin *n*
+  so, using the pin name -> function mapping spreadsheet from Seeed
+*/
 #define PIN_GPIO2 (2)
 static const uint8_t pGPIO2 = PIN_GPIO2;
 static const uint8_t pADC1_CH2 = PIN_GPIO2;

@@ -63,6 +63,10 @@ void update_pushbutton() {
   static Time debounce_until;
   static unsigned prev = 0;
 
+  /* How It Works:
+     after pushbutton has been in same position for at least `PUSHBUTTON_DEBOUNCE_ms`
+     set `pushbutton_debounced` to that value
+   */
   if (digitalRead(pushbutton) != prev) {
     prev = !prev;
     debounce_until = millis() + PUSHBUTTON_DEBOUNCE_ms;
@@ -91,6 +95,11 @@ void update_lightdark_sensor() {
   static unsigned long sum = 0;
   static unsigned samples = 0;
 
+  /* How It Works:
+     wait at least `LIGHTDARK_READING_ms`
+     take a fresh reading (push the rest along, with the oldest falling off the end)
+     update `lightdark_smoothed` with the new rolling average
+   */
   if (millis() >= wait_for_read) {
     sum -= raw[LIGHTDARK_SMOOTH-1];
     if (samples < LIGHTDARK_SMOOTH) {
@@ -120,6 +129,11 @@ void update_battery_monitor() {
   static unsigned long sum = 0;
   static unsigned samples = 0;
 
+  /* How It Works:
+     wait at least `BATTERY_READING_ms`
+     take a fresh reading (push the rest along, with the oldest falling off the end)
+     update `battery_millivolts` with the new rolling average
+   */
   if (millis() >= wait_for_read) {
     sum -= raw[BATTERY_SMOOTH-1];
     if (samples < BATTERY_SMOOTH) {
@@ -153,6 +167,11 @@ void update_single_LED() {
   static Time next_action;
   static enum {brightening, full, dimming, dark} state;
 
+  /* How It Works:
+     a Finite State Machine for a pulsing LED has 4 states
+     'full' and 'dark' each just wait until their time is up
+     'brightening' and 'dimming' each wait for each step in their respective processes
+   */
   switch (state) {
   case brightening:
     if (millis() >= next_action) {
@@ -214,6 +233,12 @@ void setup_city_smartLEDs() {
 }
 void update_city_smartLEDs() {
   // ======== CUSTOMIZE HERE ========
+
+  /* How It Works:
+     a Finite State Machine for each LED has *n* states
+     each fade state waits for each step in its respective processes
+   */
+
 }
 
 
