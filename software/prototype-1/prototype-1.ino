@@ -166,7 +166,7 @@ void update_single_LED() {
     }
     break;
 
-  case full:Ad
+  case full:
     if (millis() >= next_action) {
       next_action = millis() + LED_FULL_ms;
       state = dimming;
@@ -289,6 +289,9 @@ void setup_epaper_display() {
      and slide the "enable epaper update" switch back to "blink LEDs".
    */
   pinMode(pushbutton, INPUT);
+  pinMode(smart_LED_data, OUTPUT);
+  pinMode(smart_LED_clock, OUTPUT);
+  FastLED.addLeds<APA102, smart_LED_data, smart_LED_clock, BGR>(leds, NUM_SMART_LEDS);  // BGR orde
   /* "enable epaper update" switches pullup on EPD_Reset line to 3.3V */
   pinMode(EPD_Reset, INPUT);
   if (digitalRead(pushbutton) == 0 && digitalRead(EPD_Reset) == 1) update_epaper_display();
@@ -469,12 +472,6 @@ void update_epaper_display()
   delay(1000);
   //helloValue(123.9, 1);
   //delay(1000);
-  delay(1000);
-  if (display.epd2.WIDTH < 104)
-  {
-    showFont("glcdfont", 0);
-    delay(1000);
-  }
   //drawGrid(); return;
   drawBitmaps();
   drawGraphics();
@@ -502,8 +499,6 @@ void helloWorld()
 {
   //Serial.println("helloWorld");
   display.setRotation(1);
-  display.setFont(&FreeMonoBold9pt7b);
-  if (display.epd2.WIDTH < 104) display.setFont(0);
   display.setTextColor(GxEPD_BLACK);
   int16_t tbx, tby; uint16_t tbw, tbh;
   display.getTextBounds(HelloWorld, 0, 0, &tbx, &tby, &tbw, &tbh);
@@ -530,8 +525,6 @@ void helloWorldForDummies()
   // in GxEPD2 rotation 0 is used for native orientation (most TFT libraries use 0 fix for portrait orientation)
   // set rotation to 1 (rotate right 90 degrees) to have enough space on small displays (landscape)
   display.setRotation(1);
-  // select a suitable font in Adafruit_GFX
-  display.setFont(&FreeMonoBold9pt7b);
   // on e-papers black on white is more pleasant to read
   display.setTextColor(GxEPD_BLACK);
   // Adafruit_GFX has a handy method getTextBounds() to determine the boundary box for a text for the actual font
@@ -577,8 +570,6 @@ void helloFullScreenPartialMode()
   const char npm[] = "no partial mode";
   display.setPartialWindow(0, 0, display.width(), display.height());
   display.setRotation(1);
-  display.setFont(&FreeMonoBold9pt7b);
-  if (display.epd2.WIDTH < 104) display.setFont(0);
   display.setTextColor(GxEPD_BLACK);
   const char* updatemode;
   if (display.epd2.hasFastPartialUpdate)
@@ -626,8 +617,6 @@ void helloArduino()
 {
   //Serial.println("helloArduino");
   display.setRotation(1);
-  display.setFont(&FreeMonoBold9pt7b);
-  if (display.epd2.WIDTH < 104) display.setFont(0);
   display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
   int16_t tbx, tby; uint16_t tbw, tbh;
   // align with centered HelloWorld
@@ -637,10 +626,6 @@ void helloArduino()
   display.getTextBounds(HelloArduino, 0, 0, &tbx, &tby, &tbw, &tbh);
   uint16_t y = ((display.height() / 4) - tbh / 2) - tby; // y is base line!
   // make the window big enough to cover (overwrite) descenders of previous text
-  uint16_t wh = FreeMonoBold9pt7b.yAdvance;
-  uint16_t wy = (display.height() / 4) - wh / 2;
-  display.setPartialWindow(0, wy, display.width(), wh);
-  display.firstPage();
   do
   {
     display.fillScreen(GxEPD_WHITE);
@@ -657,8 +642,6 @@ void helloEpaper()
 {
   //Serial.println("helloEpaper");
   display.setRotation(1);
-  display.setFont(&FreeMonoBold9pt7b);
-  if (display.epd2.WIDTH < 104) display.setFont(0);
   display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
   int16_t tbx, tby; uint16_t tbw, tbh;
   // align with centered HelloWorld
@@ -668,10 +651,6 @@ void helloEpaper()
   display.getTextBounds(HelloEpaper, 0, 0, &tbx, &tby, &tbw, &tbh);
   uint16_t y = ((display.height() * 3 / 4) - tbh / 2) - tby; // y is base line!
   // make the window big enough to cover (overwrite) descenders of previous text
-  uint16_t wh = FreeMonoBold9pt7b.yAdvance;
-  uint16_t wy = (display.height() * 3 / 4) - wh / 2;
-  display.setPartialWindow(0, wy, display.width(), wh);
-  display.firstPage();
   do
   {
     display.fillScreen(GxEPD_WHITE);
@@ -696,21 +675,13 @@ void helloStripe(uint16_t pw_xe) // end of partial window in physcal x direction
 {
   //Serial.print("HelloStripe("); Serial.print(pw_xe); Serial.println(")");
   display.setRotation(3);
-  display.setFont(&FreeMonoBold9pt7b);
   display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
   int16_t tbx, tby; uint16_t tbw, tbh;
   display.getTextBounds(HelloStripe, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t wh = FreeMonoBold9pt7b.yAdvance;
-  uint16_t wy = pw_xe - wh;
   uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  uint16_t y = wy - tby;
-  display.setPartialWindow(0, wy, display.width(), wh);
-  display.firstPage();
   do
   {
     display.fillScreen(GxEPD_WHITE);
-    display.setCursor(x, y);
-    display.print(HelloStripe);
   }
   while (display.nextPage());
   //Serial.println("HelloStripe done");
@@ -734,7 +705,6 @@ void helloValue(double v, int digits)
 {
   //Serial.println("helloValue");
   display.setRotation(1);
-  display.setFont(&FreeMonoBold9pt7b);
   display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
   PrintString valueString;
   valueString.print(v, digits);
@@ -762,11 +732,6 @@ void helloValue(double v, int digits)
   ww = max(ww, uint16_t(tbw + 12)); // 12 seems ok
   wx = (display.width() - tbw) / 2;
   // make the window big enough to cover (overwrite) descenders of previous text
-  uint16_t wh = FreeMonoBold9pt7b.yAdvance;
-  wy = (display.height() * 3 / 4) - wh / 2;
-  display.setPartialWindow(wx, wy, ww, wh);
-  // alternately use the whole width for partial window
-  //display.setPartialWindow(0, wy, display.width(), wh);
   display.firstPage();
   do
   {
@@ -786,8 +751,6 @@ void deepSleepTest()
   const char from[] = "from deep sleep";
   const char again[] = "again";
   display.setRotation(1);
-  display.setFont(&FreeMonoBold9pt7b);
-  if (display.epd2.WIDTH < 104) display.setFont(0);
   display.setTextColor(GxEPD_BLACK);
   int16_t tbx, tby; uint16_t tbw, tbh;
   // center text
@@ -867,7 +830,6 @@ void showBox(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool partial)
 void drawCornerTest()
 {
   display.setFullWindow();
-  display.setFont(&FreeMonoBold9pt7b);
   display.setTextColor(GxEPD_BLACK);
   for (uint16_t r = 0; r <= 4; r++)
   {
