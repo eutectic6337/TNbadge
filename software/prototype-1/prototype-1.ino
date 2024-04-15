@@ -443,9 +443,14 @@ GxEPD2_3C<GxEPD2_213c,     MAX_HEIGHT_3C(GxEPD2_213c)>     display(GxEPD2_213c(E
 //GxEPD2_3C<GxEPD2_213_Z19c, MAX_HEIGHT_3C(GxEPD2_213_Z19c)> display(GxEPD2_213_Z19c(EPD_cs, EPD_data_cmd, EPD_Reset, EPD_Busy)); // GDEH0213Z19 104x212, UC8151D
 //GxEPD2_3C<GxEPD2_213_Z98c, MAX_HEIGHT_3C(GxEPD2_213_Z98c)> display(GxEPD2_213_Z98c(EPD_cs, EPD_data_cmd, EPD_Reset, EPD_Busy)); // GDEY0213Z98 122x250, SSD1680
 
-// 3-color
-#include "bitmaps/Bitmaps3c104x212.h" // 2.13" b/w/r
-//#include "bitmaps/Bitmaps3c128x250.h" // 2.13" b/w/r
+#include <pgmspace.h>
+const unsigned char bitmap_black[2762] PROGMEM = {
+  #include "black.hex"
+};
+const unsigned char bitmap_red[2762] PROGMEM = {
+  #include "red.hex"
+};
+
 
 
 #if defined(ESP32) && defined(USE_HSPI_FOR_EPD)
