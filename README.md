@@ -8,14 +8,19 @@ A blinky-light badge in the approximate shape of Tennessee
 ## Features
 
 ### human-accessible output
-- 5 of addressable RGB LED (APA102) at the approximate locations of the top 5 population centres
+- 5 of [2.0mm square addressable RGB LED (APA102)](https://www.aliexpress.us/item/2251832665711027.html)
+at the approximate locations of the top 5 population centres
 (west to east: Memphis, Clarksville, Nashville, Chattanooga, Knoxville)  
 on-chip SPI (SCLK from pin 9 (D8/GPIO8), MOSI from pin 11 (D10/GPIO10))
 
-- 1 of user-populated LED-footprint, switched 5V supply with current-limiting resistor  
+- 1 of user-populated [LED](https://www.aliexpress.us/item/3256802159185271.html)-footprint,
+[switched](https://www.aliexpress.us/item/2251832541429715.html)
+[5V supply](https://www.aliexpress.us/item/3256801453688823.html)
+with current-limiting resistor  
 from pin 7 (D6/GPIO21)
 
-- 1 of 212x104 pixel epaper display (grey/black, or grey/black/red), populated at either of 2 locations
+- 1 of [212x104 pixel 2.13 inch epaper display (grey/black/red)](https://www.aliexpress.us/item/3256806569318405.html)
+populated at either of 2 locations
 (one almost entirely on-board; one almost entirely off-board and mounted from behind to not obscure Chattanooga's LED)  
 on-chip SPI, /CS from pin 4 (D3/GPIO5), DATA/CMD from pin 2 (D1/GPIO3), /RESET from pin 7 (D6/GPIO21), BUSY to pin 1 (D0/GPIO2)
 
@@ -24,25 +29,28 @@ on-chip SPI, /CS from pin 4 (D3/GPIO5), DATA/CMD from pin 2 (D1/GPIO3), /RESET f
 - 1 of LDR, darkness-proportional voltage at ADC  
 to pin 3 (A3/D3/GPIO5)
 
-- 1 of pushbutton digital input to pin 10 (D9/GPIO9)
+- 1 of [pushbutton](https://www.aliexpress.us/item/2251832616067755.html)
+digital input to pin 10 (D9/GPIO9)
 
 
 ### electronic
-- 1 .. 3 of SAO V.1.69bis master connector, populated at any of 4 locations not obstructed by epaper  
+- 1 .. 3 of [SAO V.1.69bis master connector](https://www.aliexpress.us/item/2251832874579437.html)
+populated at any of 4 locations not obstructed by epaper  
 on-chip I2C (SCL on pin 6 (D5/GPIO7), SDA on pin 5 (D4/GPIO6)), GPIO1 on pin 2 (D1/GPIO3), GPIO2 on pin 1 (D0/GPIO2)
 
-- USB-C for power and programming
+- [USB-C](https://www.aliexpress.us/item/2251832621183502.html)
+for power and programming
 
-- 1000mAh LiPo battery
+- [1000mAh LiPo battery](https://www.aliexpress.us/item/3256803012248557.html)
 
 - battery voltage /2 at ADC  
 to pin 3 (A2/D2/GPIO4)
 
 - on-chip Bluetooth Low Energy / WiFi
 
-- power ON/OFF switch
+- [power ON/OFF switch](https://www.aliexpress.us/item/2255799844067525.html)
 
-- epaper display / LED enable switch  
+- [epaper display / LED enable switch](https://www.aliexpress.us/item/2255799844067525.html)
 (to maximize epaper lifetime by disconnecting power other than when required for update,
 and encourage this by having LED power mutually exclusive with epaper power)
 
