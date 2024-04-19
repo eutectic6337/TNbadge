@@ -46,7 +46,7 @@ S="$TMP/split"
 eval $resize &&
 eval $top &&
 eval $bot && {
-	F="${TOP}" && eval $rotate > black.hex
-	F="${BOT}" && eval $rotate > red.hex
+	F="${TOP}" && eval $rotate > black.h
+	F="${BOT}" && eval $rotate > red.h
 }
 

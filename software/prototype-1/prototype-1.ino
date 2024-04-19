@@ -216,31 +216,58 @@ void update_single_LED() {
 // ======== blinky outputs - city smartLEDs
 #include <SPI.h>
 //FIXME: add ESP32C3 hardware SPI support to FastLED
+FASTLED_USE_GLOBAL_BRIGHTNESS 1
 #include <FastLED.h>
 //
-enum LED_city_indices {
+Digital_Output smart_LED_data = pMOSI;
+Digital_Output smart_LED_clock = pSCK;
+
+enum LED_city_index {
   LED_Memphis, LED_Clarkesville, LED_Nashville, LED_Chattanooga, LED_Knoxville,
   NUM_SMART_LEDS
 };
-Digital_Output smart_LED_data = pMOSI;
-Digital_Output smart_LED_clock = pSCK;
 CRGB leds[NUM_SMART_LEDS];
 void setup_city_smartLEDs() {
   pinMode(smart_LED_data, OUTPUT);
   pinMode(smart_LED_clock, OUTPUT);
   FastLED.addLeds<APA102, smart_LED_data, smart_LED_clock, BGR>(leds, NUM_SMART_LEDS);  // BGR ordering is typical
-	FastLED.setBrightness(25);
+	FastLED.setBrightness(100);
+  FastLED.setMaxPowerInMilliWatts(500);
 }
-void update_city_smartLEDs() {
+int any_LED_changed = 0;
+void update_city(LED_city_index i) {
   // ======== CUSTOMIZE HERE ========
 
   /* How It Works:
      a Finite State Machine for each LED has *n* states
      each fade state waits for each step in its respective processes
    */
+  static struct {
+    CRGB old, new;
+    fract8 step;
+    Time next;
+  } led[NUM_SMART_LEDS];
 
+  if (millis() >= led[i].next) {
+      led[i].next = millis() + LED_BRIGHTEN_ms;
+      if (fadeValue < LED_FULL) {
+        fadeValue++;
+        analogWrite(single_LED, fadeValue);
+        break;
+      }
+      state = full;
+    }
+    break;
 }
-
+void update_city_smartLEDs() {
+  for(LED_city_index i = LED_Memphis; i <= LED_Knoxville; i++) {
+    update_city(i);
+  }
+  if (any_LED_changed) {
+    FastLED.show();
+    any_LED_changed = 0;
+  }
+}
 
 /*
 each LED starts at time 0, value 0,0,0
@@ -403,7 +430,6 @@ void loop2() {
 		// Set the i'th led to red 
 		leds[i] = CHSV(hue++, 255, 255);
 		// Show the leds
-		FastLED.show(); 
 		// now that we've shown the leds, reset the i'th led to black
 		// leds[i] = CRGB::Black;
 		fadeall();
@@ -445,10 +471,10 @@ GxEPD2_3C<GxEPD2_213c,     MAX_HEIGHT_3C(GxEPD2_213c)>     display(GxEPD2_213c(E
 
 #include <pgmspace.h>
 const unsigned char bitmap_black[2762] PROGMEM = {
-  #include "black.hex"
+  #include "black.h"
 };
 const unsigned char bitmap_red[2762] PROGMEM = {
-  #include "red.hex"
+  #include "red.h"
 };
 
 
