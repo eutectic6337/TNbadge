@@ -8059,7 +8059,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150"
+		(property "Value" "100"
 			(at 195.58 146.0499 0)
 			(effects
 				(font
