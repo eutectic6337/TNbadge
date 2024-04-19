@@ -41,7 +41,7 @@ GPIOpin SAO_SDA = pSDA;
 GPIOpin SAO_SCL = pSCL;
 void setup_SAOs()
 {
-  // ======== CUSTOMIZE HERE ========
+  // ======== CUSTOMIZE HERE ========old
   pinMode(SAO_GPIO1, INPUT);
   pinMode(SAO_GPIO2, INPUT);
   pinMode(SAO_SDA, OUTPUT);
@@ -216,7 +216,7 @@ void update_single_LED() {
 // ======== blinky outputs - city smartLEDs
 #include <SPI.h>
 //FIXME: add ESP32C3 hardware SPI support to FastLED
-FASTLED_USE_GLOBAL_BRIGHTNESS 1
+#define FASTLED_USE_GLOBAL_BRIGHTNESS 1
 #include <FastLED.h>
 //
 Digital_Output smart_LED_data = pMOSI;
@@ -235,7 +235,7 @@ void setup_city_smartLEDs() {
   FastLED.setMaxPowerInMilliWatts(500);
 }
 int any_LED_changed = 0;
-void update_city(LED_city_index i) {
+void update_city(enum LED_city_index i) {
   // ======== CUSTOMIZE HERE ========
 
   /* How It Works:
@@ -243,29 +243,25 @@ void update_city(LED_city_index i) {
      each fade state waits for each step in its respective processes
    */
   static struct {
-    CRGB old, new;
+    Time wait_until;
+    CRGB new_LED;
+    Time time_step;
     fract8 step;
-    Time next;
-  } led[NUM_SMART_LEDS];
+  } city[NUM_SMART_LEDS];
 
-  if (millis() >= led[i].next) {
-      led[i].next = millis() + LED_BRIGHTEN_ms;
-      if (fadeValue < LED_FULL) {
-        fadeValue++;
-        analogWrite(single_LED, fadeValue);
-        break;
-      }
-      state = full;
-    }
-    break;
+  if (millis() >= city[i].wait_until) {
+      any_LED_changed = 1;
+      city[i].wait_until = millis() + city[i].time_step;
+      leds[i] = leds[i].lerp8(city[i].new_LED, city[i].step);
+  }
 }
 void update_city_smartLEDs() {
   for(LED_city_index i = LED_Memphis; i <= LED_Knoxville; i++) {
     update_city(i);
   }
   if (any_LED_changed) {
-    FastLED.show();
     any_LED_changed = 0;
+    FastLED.show();
   }
 }
 
@@ -276,7 +272,10 @@ a fade goes from old[r,g,b] to new[r,g,b] over time t
 */
 struct LED_fade { // from current to target over time
   unsigned time; // units might be seconds, milliseconds, ...
-  CRGB target;
+  union {
+    CRGB c;
+    struct LED_fade* other;
+  };
 };
 
 struct LED_state {
@@ -285,32 +284,32 @@ struct LED_state {
 
 // examples // when step[n].time==0, no more steps
 const LED_fade white_90pc_flash[] = {
-  {1,CRGB::White}, {99,CRGB::White},
-  {1,CRGB::Black}, {9,CRGB::Black}, {0}}; //cycle=100
+  {1,.c=CRGB::White}, {99,.c=CRGB::White},
+  {1,.c=CRGB::Black}, {9,.c=CRGB::Black}, {0}}; //cycle=100
 const LED_fade white_50pc_flash[] = {
-  {1,CRGB::White}, {99,CRGB::White},
-  {1,CRGB::Black}, {99,CRGB::Black}, {0}}; //cycle=200
+  {1,.c=CRGB::White}, {99,.c=CRGB::White},
+  {1,.c=CRGB::Black}, {99,.c=CRGB::Black}, {0}}; //cycle=200
 const LED_fade white_10pc_flash[] = {
-  {1,CRGB::White}, {99,CRGB::White},
-  {1,CRGB::Black}, {899,CRGB::Black}, {0}}; //cycle=1000
+  {1,.c=CRGB::White}, {99,.c=CRGB::White},
+  {1,.c=CRGB::Black}, {899,.c=CRGB::Black}, {0}}; //cycle=1000
 const LED_fade white_1pc_flash[] = {
-  {1,CRGB::White}, {99,CRGB::White},
-  {1,CRGB::Black}, {9899,CRGB::Black}, {0}}; //cycle=10000
+  {1,.c=CRGB::White}, {99,.c=CRGB::White},
+  {1,.c=CRGB::Black}, {9899,.c=CRGB::Black}, {0}}; //cycle=10000
 const LED_fade white_double_strobe[] = {
-  {1,CRGB::White}, {99,CRGB::White},
-  {1,CRGB::Black}, {99,CRGB::Black},
-  {1,CRGB::White}, {99,CRGB::White},
-  {1,CRGB::Black}, {9699,CRGB::Black}, {0}}; //cycle=10000
+  {1,.c=CRGB::White}, {99,.c=CRGB::White},
+  {1,.c=CRGB::Black}, {99,.c=CRGB::Black},
+  {1,.c=CRGB::White}, {99,.c=CRGB::White},
+  {1,.c=CRGB::Black}, {9699,.c=CRGB::Black}, {0}}; //cycle=10000
 const LED_fade rainbow[] = {
-  {100,CRGB::Red},
-  {100,CRGB::Orange},
-  {100,CRGB::Yellow},
-  {100,CRGB::Green},
-  {100,CRGB::Blue},
-  {100,CRGB::Violet}, {0}};//cycle=600
+  {100,.c=CRGB::Red},
+  {100,.c=CRGB::Orange},
+  {100,.c=CRGB::Yellow},
+  {100,.c=CRGB::Green},
+  {100,.c=CRGB::Blue},
+  {100,.c=CRGB::Violet}, {0}};//cycle=600
 const LED_fade red_blue_sawtooth[] = {
-  {1,CRGB::Black}, {999,CRGB::Red},
-  {1,CRGB::Black}, {999,CRGB::Blue}, {0}};//cycle=2000
+  {1,.c=CRGB::Black}, {999,.c=CRGB::Red},
+  {1,.c=CRGB::Black}, {999,.c=CRGB::Blue}, {0}};//cycle=2000
 
 // ======== epaper display (EPD)
 //FIXME: add ESP32C3 hardware SPI support to GxEPD2
