@@ -1,7 +1,7 @@
 (export (version "E")
   (design
     (source "/home/mlp/Documents/dc615/TNbadge/hardware/badge.kicad_sch")
-    (date "2024-04-07T10:24:37-0500")
+    (date "2024-04-19T17:00:23-0500")
     (tool "Eeschema 8.0.1")
     (sheet (number "1") (name "/") (tstamps "/")
       (title_block
@@ -346,7 +346,7 @@
       (sheetpath (names "/") (tstamps "/"))
       (tstamps "27089069-07da-431f-91e4-e4a59a574903"))
     (comp (ref "R11")
-      (value "150")
+      (value "100")
       (footprint "Resistor_SMD:R_2010_5025Metric_Pad1.40x2.65mm_HandSolder")
       (fields
         (field (name "Footprint") "Resistor_SMD:R_2010_5025Metric_Pad1.40x2.65mm_HandSolder")
