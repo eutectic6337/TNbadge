@@ -21,9 +21,9 @@
 - [AliExpress](https://aliexpress.com) (everything else)
 
 
-# surface mount
+# assembly and test
 
-## front
+## front surface mount
 
 ### assembly
 
@@ -45,12 +45,12 @@
 {test points, CPU pads}
 
 - continuity is expected between
- - TP1 CPU13 CPU\_GND CPU\_BAT-
- - TP2 CPU\_BAT+
- - TP3 CPU12
- - TP15 CPU8
- - TP18 CPU7
- - TP20 CPU1
+-- TP1 CPU13 CPU\_GND CPU\_BAT-
+-- TP2 CPU\_BAT+
+-- TP3 CPU12
+-- TP15 CPU8
+-- TP18 CPU7
+-- TP20 CPU1
 
 - continuity between any pair of test points,
 or between any pair of CPU pads,
@@ -79,7 +79,71 @@ For each identified fault
 
 - re-test to verify fault is gone
 
-## through-hole
+## back surface mount
 
-# test procedure
+### assembly
+
+- stencil solder paste on front
+
+- place 1x level shifter chip
+
+- place 1x 100 ohm resistor
+
+- place 6x 10k resistor
+
+- place 7x 1uF capacitor
+
+- place 2x slide switch
+
+- place 1x battery connector
+
+- (optional) preheat to 100 degC
+
+- apply hot air at 200+ degC to each component until solder flows to create concave surface
+
+### test
+
+- position board front-down on stable non-conductive surface
+
+- starting at lower right corner, test continuity between each pair of pads from the set
+{test points, CPU pads}
+
+- continuity is expected between
+-- TP1 CPU13 CPU\_GND CPU\_BAT-
+-- TP2 CPU\_BAT+
+-- TP3 CPU12
+-- TP15 CPU8
+-- TP18 CPU7
+-- TP20 CPU1
+
+- continuity between any pair of test points,
+or between any pair of CPU pads,
+or between any other test points and CPU pads
+indicates a likely solder bridge
+
+### rectify
+
+most likely location for bridge is level shifter chip
+
+- flux and wick up excess solder from pins on one side
+
+- drag-solder with small wedge tip iron to reflow remaining solder
+
+- re-test to verify fault is gone; if fault remains, dig deeper
+
+For each other identified fault
+
+- desolder identified likely culprit components
+
+- flux and wick up solder from PCB
+
+- re-test to verify fault is gone; if fault remains, dig deeper
+
+- flux pads and reposition component
+
+- reflow remaining solder
+
+- add minimal solder if needed
+
+- re-test to verify fault is gone
 
