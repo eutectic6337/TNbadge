@@ -109,11 +109,17 @@ For each identified fault
 {test points, CPU pads}
 
 - continuity is expected between
+
 -- TP1 CPU13 CPU\_GND CPU\_BAT-
+
 -- TP2 CPU\_BAT+
+
 -- TP3 CPU12
+
 -- TP15 CPU8
--- TP18 CPU7
+
+-- TP19 CPU7
+
 -- TP20 CPU1
 
 - continuity between any pair of test points,
