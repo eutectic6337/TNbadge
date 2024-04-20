@@ -12,8 +12,12 @@
 
 ## component sources
 
-- already in hand (LDRs)
+- already in hand (through-hole LDRs)
 
-- [LCSC](https://lcsc.com)
+- [LCSC](https://lcsc.com) (SMD resistors & capacitors)
 
-- [AliExpress](https://aliexpress.com)
+- [Seeed Studio](https://seeedstudio.com) (CPU module)
+
+- [AliExpress](https://aliexpress.com) (everything else)
+
+
