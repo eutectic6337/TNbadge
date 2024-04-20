@@ -1,6 +1,6 @@
-#TNbadge hardware
+# TNbadge hardware
 
-##Printed Circuit Board
+## Printed Circuit Board
 
 - designed in Kicad
 
@@ -10,7 +10,7 @@
 
 - ordered from [JLC PCB](https://jlcpcb.com)
 
-##component sources
+## component sources
 
 - already in hand (LDRs)
 

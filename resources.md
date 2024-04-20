@@ -1,6 +1,6 @@
 [public repo](https://github.com/eutectic6337/TNbadge)
 
-#Xiao ESP32C3
+# Xiao ESP32C3
 
 [order MCU module](https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html)
 
@@ -14,7 +14,7 @@ to Reflash factory firmware
 
 - get [factory firmware](https://files.seeedstudio.com/wiki/XIAO_WiFi/Resources/ESP32-C3_RFTest_108_2b9b157_20211014.bin)
 
-##bootloader
+## bootloader
 
 [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/bootloader.html)
 
@@ -23,12 +23,13 @@ to Reflash factory firmware
 wouldn't it be nice if we used something like the [Adafruit nRF52 bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootloader)
 which supports drag-and-drop of [USB Flashing Format (UF2) files](https://github.com/Microsoft/uf2)
 
-##Zephyr
+## Zephyr
 
 [hardware support](https://docs.zephyrproject.org/latest/boards/seeed/xiao_esp32c3/doc/index.html)
 
 
-#addressable RGB LEDs
+# addressable RGB LEDs
+
 [FastLED](https://github.com/FastLED/FastLED)
 
 [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
@@ -40,7 +41,8 @@ which supports drag-and-drop of [USB Flashing Format (UF2) files](https://github
 [Adafruit NeoMatrix](https://github.com/adafruit/Adafruit_NeoMatrix)
 
 
-#e-paper display
+# e-paper display
+
 [tutorial at digikey](https://www.digikey.com/en/maker/tutorials/2022/how-to-use-an-e-ink-display-in-your-arduino-project)
 
 [sample code from waveshare](https://www.waveshare.com/w/upload/7/73/1.54inch_e-Paper_Module_code.7z)
