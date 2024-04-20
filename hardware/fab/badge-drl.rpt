@@ -1,5 +1,5 @@
 Drill report for badge.kicad_pcb
-Created on 2024-04-07T13:01:35-0500
+Created on 2024-04-20T14:56:39-0500
 
 Copper Layer Stackup:
     =============================================================
@@ -10,7 +10,7 @@ Copper Layer Stackup:
 Drill file 'badge-PTH.drl' contains
     plated through holes:
     =============================================================
-    T1  0.400mm  0.0157"  (134 holes)
+    T1  0.400mm  0.0157"  (136 holes)
     T2  0.600mm  0.0236"  (2 holes)
     T3  0.800mm  0.0315"  (2 holes)
     T4  0.900mm  0.0354"  (2 holes)
@@ -19,7 +19,7 @@ Drill file 'badge-PTH.drl' contains
     T7  2.500mm  0.0984"  (3 holes)
     T8  3.000mm  0.1181"  (6 holes)  (with 4 slots)
 
-    Total plated holes count 192
+    Total plated holes count 194
 
 
 Drill file 'badge-NPTH.drl' contains
