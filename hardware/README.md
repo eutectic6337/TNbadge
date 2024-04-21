@@ -12,7 +12,7 @@
 
    - manually edited all testpoints to show correct designator, on back silkscreen layer
 
-   - manually imported QR code PNG onto back silkscreen layer (Kicad plays poorly)
+   - manually imported QR code PNG (L0) onto back silkscreen layer (Kicad plays poorly)
 
    - manually adjusted color of silkscreen artifacts
 
@@ -37,11 +37,17 @@
 
 ### assemble
 
+- position PCB back-down on stable heat-resistant surface
+
 - stencil solder paste on front
 
 - place 2x 100k resistor (2010)
+![100k surface mount resistors](i/00-100k.png)
 
 - place 5x APA102 addressable RGB LED (2020)
+![APA102 datasheet](i/01-APA102.png)
+![APA102 footprint](i/02-APA102.png)
+![APA102 from above](i/03-APA102.png)
 
 - (optional) preheat to 100 degC
 
@@ -99,19 +105,31 @@ For each identified fault
 
 ### assembly
 
-- stencil solder paste on front
+- position PCB front-down on stable heat-resistant surface
+
+- stencil solder paste on back
 
 - place 1x level shifter chip (TSSOP)
+![level shifter](i/04-TXS0104.png)
+
+- place 1x pushbutton switch
+![surface mount pushbutton](i/05-pbsw.png)
 
 - place 1x 100 ohm resistor (2010)
+![100 ohm surface mount resistor](i/06-100R.png)
 
 - place 6x 10k resistor (2010)
+![10k surface mount resistors](i/07-10k.png)
 
 - place 7x 1uF capacitor (1206)
+![1uF surface mount capacitors](i/08-1uF.png)
 
 - place 2x slide switch
+![surface mount power switch](i/09-pow_sw.png)
+![surface mount selector switch](i/10-sel_sw.png)
 
 - place 1x battery connector
+![surface mount battery connector](i/11-batcon.png)
 
 - (optional) preheat to 100 degC
 
@@ -168,4 +186,31 @@ For each other identified fault
 - add minimal solder if needed
 
 - re-test to verify fault is gone
+
+## CPU module
+
+### assembly
+
+- position PCB front-down on stable heat-resistant surface
+
+- apply small dot of solder paste on each of 14 main CPU pads on PCB
+
+- place ESP32C3 CPU module
+![CPU module](12-CPU.jpg)
+
+- apply hot air at 200+ degC to each long edge of CPU carrier board
+until solder flows to create concave surface
+![CPU pads after reflow](13-CPUreflow.png)
+![CPU pads after reflow](14-CPUreflow.png)
+
+- position PCB back-down on stable heat-resistant surface
+
+- apply small dot of solder paste in each of 3 through-holes under CPU module
+![view through holes to CPU module](15-underCPU.png)
+![solder paste in holes](16-underCPUpaste.png)
+
+- apply hot air at 200+ degC to holes under CPU carrier board
+until solder flows to create concave surface
+![reflowed solder in holes](17-underCPUreflow.png)
+
 
