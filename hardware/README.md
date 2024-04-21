@@ -139,7 +139,7 @@ most likely location for bridge is TSSOP level shifter chip
 
 - flux and wick up excess solder from pins on one side
 
-- drag-solder with small wedge tip iron to reflow remaining solder
+- drag-solder with small wedge/chisel tip iron to reflow remaining solder
 
 - re-test to verify fault is gone; if fault remains, dig deeper
 
