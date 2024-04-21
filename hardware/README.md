@@ -6,7 +6,17 @@
 
 - imported into [EasyEDA Pro](https://pro.easyeda.com)
 
-- multicolour PNG imported to "silkscreen" layer
+   - manually reattached lanyard/stencil-alignment holes, battery box slots, an zero-size holes to net GND
+
+   - manually re-edited APA102 footpring to remove solder mask/stencil openings over (center) duplicate GND/5V pads
+
+   - manually edited all testpoints to show correct designator, on back silkscreen layer
+
+   - manually imported QR code PNG onto back silkscreen layer (Kicad plays poorly)
+
+   - manually adjusted color of silkscreen artifacts
+
+- multicolour PNG artwork imported to front silkscreen layer
 
 - ordered from [JLC PCB](https://jlcpcb.com)
 
