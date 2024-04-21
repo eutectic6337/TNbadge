@@ -3,8 +3,8 @@
 header_comment='/* 104x212 bitmap 2762 bytes */'
 
 resize='magick "$IN" -resize 212x208^ -crop 212x208+0+0 -monochrome "$TMP1" 2>$R.err'
-top='magick "$TMP1" -crop 212x104 "pbm:${TOP}" 2> $S.err'
-bot='magick "$TMP1" -chop 212x104 -crop 212x104 "pbm:${BOT}" 2> $S.err'
+top='magick "$TMP1" -crop 212x104+0+0 "pbm:${TOP}" 2> $S.err'
+bot='magick "$TMP1" -crop 212x104+0+104 "pbm:${BOT}" 2> $S.err'
 rotate="magick \"pbm:\$F\" -rotate -90 pbm:- |
 	tail -n +3 |
 	xxd -g 1 |
