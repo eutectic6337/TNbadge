@@ -196,21 +196,21 @@ For each other identified fault
 - apply small dot of solder paste on each of 14 main CPU pads on PCB
 
 - place ESP32C3 CPU module
-![CPU module](12-CPU.jpg)
+![CPU module](i/12-CPU.jpg)
 
 - apply hot air at 200+ degC to each long edge of CPU carrier board
 until solder flows to create concave surface
-![CPU pads after reflow](13-CPUreflow.png)
-![CPU pads after reflow](14-CPUreflow.png)
+![CPU pads after reflow](i/13-CPUreflow.png)
+![CPU pads after reflow](i/14-CPUreflow.png)
 
 - position PCB back-down on stable heat-resistant surface
 
 - apply small dot of solder paste in each of 3 through-holes under CPU module
-![view through holes to CPU module](15-underCPU.png)
-![solder paste in holes](16-underCPUpaste.png)
+![view through holes to CPU module](i/15-underCPU.png)
+![solder paste in holes](i/16-underCPUpaste.png)
 
 - apply hot air at 200+ degC to holes under CPU carrier board
 until solder flows to create concave surface
-![reflowed solder in holes](17-underCPUreflow.png)
+![reflowed solder in holes](i/17-underCPUreflow.png)
 
 
