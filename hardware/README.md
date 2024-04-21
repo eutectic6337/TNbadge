@@ -8,6 +8,9 @@
 
    - manually reattached lanyard/stencil-alignment holes, battery box slots, an zero-size holes to net GND
 
+   - manually reattached quarter-circle track around pin 2 of epaper display connector, top left,
+to net /GPIO1{SLASH}DC
+
    - manually re-edited APA102 footpring to remove solder mask/stencil openings over (center) duplicate GND/5V pads
 
    - manually edited all testpoints to show correct designator, on back silkscreen layer
