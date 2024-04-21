@@ -25,13 +25,13 @@
 
 ## front surface mount
 
-### assembly
+### assemble
 
 - stencil solder paste on front
 
-- place 2x 100k resistor
+- place 2x 100k resistor (2010)
 
-- place 5x APA102 addressable RGB LED
+- place 5x APA102 addressable RGB LED (2020)
 
 - (optional) preheat to 100 degC
 
@@ -91,13 +91,13 @@ For each identified fault
 
 - stencil solder paste on front
 
-- place 1x level shifter chip
+- place 1x level shifter chip (TSSOP)
 
-- place 1x 100 ohm resistor
+- place 1x 100 ohm resistor (2010)
 
-- place 6x 10k resistor
+- place 6x 10k resistor (2010)
 
-- place 7x 1uF capacitor
+- place 7x 1uF capacitor (1206)
 
 - place 2x slide switch
 
@@ -135,7 +135,7 @@ indicates a likely solder bridge
 
 ### rectify
 
-most likely location for bridge is level shifter chip
+most likely location for bridge is TSSOP level shifter chip
 
 - flux and wick up excess solder from pins on one side
 
