@@ -15,8 +15,6 @@
 //    maintained in update_FEATURE()
 //
 #include <Arduino.h>
-#include <Preferences.h>
-
 
 //syntactic sugar
 typedef const int GPIOpin;
@@ -26,8 +24,60 @@ typedef const int Digital_Output;
 
 typedef unsigned long Time;
 
+
+#define DO_LOG 1
+
+#ifdef DO_LOG
+#define LOG Serial.print
+#define LOGln Serial.println
+#else
+#define LOG (void)
+#define LOGln (void)
+#endif
+
 const Time BOOST_CONVERTER_STARTUP_ms = 500;
 const unsigned long SERIAL_SPEED = 115200;
+void setup_serial()
+{
+	Serial.begin(SERIAL_SPEED);
+	LOGln("badge is up");
+}
+
+const Time MINIMUM_s_TO_UPDATE_PREFS = 300;
+const Time MAXIMUM_s_TO_UPDATE_PREFS = 1200;
+#include <Preferences.h>
+Preferences prefs;
+struct {
+  uint64_t seed;// for random number generator
+  Time next;
+} conf;
+#include "esp32c3/rom/rtc.h"
+void setup_prefs()
+{
+  prefs.begin("badge", /*readonly=*/true);
+  conf.seed = prefs.getULong64("seed") << 1
+    + 1
+    + rtc_get_reset_reason(0);
+  prefs.end();
+
+  randomSeed(conf.seed);
+  uint32_t t = random(MINIMUM_s_TO_UPDATE_PREFS, MAXIMUM_s_TO_UPDATE_PREFS);
+  conf.next = millis()/1000 + t;
+  LOG("seed=");LOGln(conf.seed);
+  LOG("seconds to next prefs write=");LOGln(t);
+}
+void update_prefs()
+{
+  if (millis()/1000 >= conf.next) {
+    prefs.begin("badge", /*readonly=*/false);
+    conf.seed += micros();
+    prefs.putULong64("seed", conf.seed);
+    prefs.end();
+    conf.next = random(MINIMUM_s_TO_UPDATE_PREFS, MAXIMUM_s_TO_UPDATE_PREFS);
+    LOG("seconds to next prefs write=");LOGln(t);
+  }
+}
+
 
 #include "XIAO-ESP32C3-pinout.h"
 // functions on board:
@@ -375,7 +425,9 @@ void setup_epaper_display() {
 #include <WiFiAP.h>
 #include <WiFiMulti.h>
 //
+uint64_t MAC;
 void setup_radio() {
+  MAC = ESP.getEfuseMac();
   // ======== CUSTOMIZE HERE ========
 }
 void update_radio() {
@@ -383,15 +435,9 @@ void update_radio() {
 }
 
 
-void setup_serial()
-{
-	Serial.begin(SERIAL_SPEED);
-	Serial.println("badge is up");
-}
-
-
 void setup() {
   setup_serial();// so other code can produce diagnostics, or interact
+  setup_prefs();
   /* odd-one-out:
      only modify EPD at powerup, and only if explicitly requested
      because EPD has limited lifetime and slow response
@@ -411,6 +457,8 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
+  update_prefs();
+
   update_battery_monitor();
   update_lightdark_sensor();
   update_pushbutton();
