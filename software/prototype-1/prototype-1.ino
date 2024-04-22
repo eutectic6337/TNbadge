@@ -102,6 +102,8 @@ void setup_SAOs()
   pinMode(SAO_GPIO2, INPUT);
   pinMode(SAO_SDA, OUTPUT);
   pinMode(SAO_SCL, OUTPUT);
+  Wire.begin();
+
 }
 void update_SAOs()
 {
@@ -294,6 +296,8 @@ CRGB leds[NUM_SMART_LEDS];
 void setup_city_smartLEDs() {
   pinMode(smart_LED_data, OUTPUT);
   pinMode(smart_LED_clock, OUTPUT);
+  SPI.begin();
+  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
   FastLED.addLeds<APA102, smart_LED_data, smart_LED_clock, BGR>(leds, NUM_SMART_LEDS);  // BGR ordering is typical
 	FastLED.setBrightness(100);
   FastLED.setMaxPowerInMilliWatts(500);
@@ -670,6 +674,9 @@ void update_epaper_display()
   pinMode(EPD_Reset, OUTPUT);
   pinMode(EPD_Busy, INPUT);
 
+  SPI.begin();
+  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
+
   // FIXME
 
   Serial.println();
@@ -709,6 +716,8 @@ void update_epaper_display()
   deepSleepTest();
   Serial.println("setup done");
   display.end();
+
+  SPI.end();
 }
 
 
