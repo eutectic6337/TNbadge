@@ -103,7 +103,6 @@ void setup_SAOs()
   pinMode(SAO_SDA, OUTPUT);
   pinMode(SAO_SCL, OUTPUT);
   Wire.begin();
-
 }
 void update_SAOs()
 {
@@ -441,10 +440,13 @@ uint64_t MAC;
 #include <BLEAdvertisedDevice.h>
 #include <BLEBeacon.h>
 #include <BLEServer.h>
+// https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Assigned_Numbers/out/en/Assigned_Numbers.pdf
 #define SERVICE_UUID        "6050bcfe-a8f8-4ad6-961d-5af97ac37e09"
 #define CHARACTERISTIC_UUID "cab5c6ff-31a7-4b2a-aada-4bae02ca1ca7"
+#if 0
 #include "SimpleBLE.h"
 SimpleBLE ble;
+#endif
 
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -461,7 +463,10 @@ void setup_radio() {
   MAC = ESP.getEfuseMac();
 
   // ======== CUSTOMIZE Bluetooth HERE ========
+  // IDEA: https://en.wikipedia.org/wiki/Bluetooth_Low_Energy_beacon
+#if 0
   ble.begin("ESP32 SimpleBLE");
+#endif
 
 #if 0 //approx 50k
   BLEDevice::init("Long name works now");
@@ -486,7 +491,7 @@ void setup_radio() {
 
   // ======== CUSTOMIZE WiFi HERE ========
   sprintf(SSID + (sizeof SSIDprefix) - 1, "%012llX", MAC);
-#if 0 // about 400k
+#if 0 //approx 400k
   // You can remove the password parameter if you want the AP to be open.
   // a valid password must have more than 7 characters
   if (!WiFi.softAP(SSID, WiFi_password)) {
@@ -509,7 +514,7 @@ void update_radio() {
   // ======== CUSTOMIZE Bluetooth HERE ========
 
   // ======== CUSTOMIZE WiFi HERE ========
-#if 0 // about 30k
+#if 0 //approx 30k
   //FIXME: re-work to be non-blocking
   WiFiClient client = server.available();   // listen for incoming clients
 
@@ -676,12 +681,7 @@ void update_epaper_display()
 
   SPI.begin();
   SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
-
   // FIXME
-
-  Serial.println();
-  Serial.println("setup");
-  delay(100);
 
 #if defined(ESP32) && defined(USE_HSPI_FOR_EPD)
   hspi.begin(13, 12, 14, 15); // remap hspi for EPD (swap pins)
@@ -693,470 +693,20 @@ void update_epaper_display()
   //display.init(115200); // default 10ms reset pulse, e.g. for bare panels with DESPI-C02
   //display.init(115200, true, 2, false); // USE THIS for Waveshare boards with "clever" reset circuit, 2ms reset pulse
   //display.init(115200, true, 10, false, SPIn, SPISettings(4000000, MSBFIRST, SPI_MODE0)); // extended init method with SPI channel and/or settings selection
-  if (display.pages() > 1)
-  {
-    delay(100);
-    Serial.print("pages = "); Serial.print(display.pages()); Serial.print(" page height = "); Serial.println(display.pageHeight());
-    delay(1000);
-  }
   // first update should be full refresh
-  helloWorld();
-  delay(1000);
-  // partial refresh mode can be used to full screen,
-  // effective if display panel hasFastPartialUpdate
-  helloFullScreenPartialMode();
-  delay(1000);
-  //stripeTest(); return; // GDEH029Z13 issue
-  helloArduino();
-  delay(1000);
-  helloEpaper();
-  delay(1000);
-  drawBitmaps();
-  display.powerOff();
-  deepSleepTest();
-  Serial.println("setup done");
-  display.end();
 
-  SPI.end();
-}
-
-
-// note for partial update window and setPartialWindow() method:
-// partial update window size and position is on byte boundary in physical x direction
-// the size is increased in setPartialWindow() if x or w are not multiple of 8 for even rotation, y or h for odd rotation
-// see also comment in GxEPD2_BW.h, GxEPD2_3C.h or GxEPD2_GFX.h for method setPartialWindow()
-
-const char HelloWorld[] = "Hello World!";
-const char HelloArduino[] = "Hello Arduino!";
-const char HelloEpaper[] = "Hello E-Paper!";
-
-void helloWorld()
-{
-  //Serial.println("helloWorld");
-  display.setRotation(1);
-  display.setTextColor(GxEPD_BLACK);
-  int16_t tbx, tby; uint16_t tbw, tbh;
-  display.getTextBounds(HelloWorld, 0, 0, &tbx, &tby, &tbw, &tbh);
-  // center bounding box by transposition of origin:
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  uint16_t y = ((display.height() - tbh) / 2) - tby;
-  display.setFullWindow();
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(x, y);
-    display.print(HelloWorld);
-  }
-  while (display.nextPage());
-  //Serial.println("helloWorld done");
-}
-
-void helloWorldForDummies()
-{
-  //Serial.println("helloWorld");
-  const char text[] = "Hello World!";
   // most e-papers have width < height (portrait) as native orientation, especially the small ones
   // in GxEPD2 rotation 0 is used for native orientation (most TFT libraries use 0 fix for portrait orientation)
   // set rotation to 1 (rotate right 90 degrees) to have enough space on small displays (landscape)
   display.setRotation(1);
-  // on e-papers black on white is more pleasant to read
-  display.setTextColor(GxEPD_BLACK);
-  // Adafruit_GFX has a handy method getTextBounds() to determine the boundary box for a text for the actual font
-  int16_t tbx, tby; uint16_t tbw, tbh; // boundary box window
-  display.getTextBounds(text, 0, 0, &tbx, &tby, &tbw, &tbh); // it works for origin 0, 0, fortunately (negative tby!)
-  // center bounding box by transposition of origin:
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  uint16_t y = ((display.height() - tbh) / 2) - tby;
-  // full window mode is the initial mode, set it anyway
   display.setFullWindow();
-  // here we use paged drawing, even if the processor has enough RAM for full buffer
-  // so this can be used with any supported processor board.
-  // the cost in code overhead and execution time penalty is marginal
-  // tell the graphics class to use paged drawing mode
+
   display.firstPage();
-  do
-  {
-    // this part of code is executed multiple times, as many as needed,
-    // in case of full buffer it is executed once
-    // IMPORTANT: each iteration needs to draw the same, to avoid strange effects
-    // use a copy of values that might change, don't read e.g. from analog or pins in the loop!
-    display.fillScreen(GxEPD_WHITE); // set the background to white (fill the buffer with value for white)
-    display.setCursor(x, y); // set the postition to start printing text
-    display.print(text); // print some text
-    // end of part executed multiple times
-  }
-  // tell the graphics class to transfer the buffer content (page) to the controller buffer
-  // the graphics class will command the controller to refresh to the screen when the last page has been transferred
-  // returns true if more pages need be drawn and transferred
-  // returns false if the last page has been transferred and the screen refreshed for panels without fast partial update
-  // returns false for panels with fast partial update when the controller buffer has been written once more, to make the differential buffers equal
-  // (for full buffered with fast partial update the (full) buffer is just transferred again, and false returned)
-  while (display.nextPage());
-  //Serial.println("helloWorld done");
-}
+  display.fillScreen(GxEPD_WHITE);
+  display.drawInvertedBitmap(0, 0, bitmap_black, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_BLACK);
+  display.drawBitmap(0, 0, bitmap_red, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_RED);
+  display.nextPage();
 
-void helloFullScreenPartialMode()
-{
-  //Serial.println("helloFullScreenPartialMode");
-  const char fullscreen[] = "full screen update";
-  const char fpm[] = "fast partial mode";
-  const char spm[] = "slow partial mode";
-  const char npm[] = "no partial mode";
-  display.setPartialWindow(0, 0, display.width(), display.height());
-  display.setRotation(1);
-  display.setTextColor(GxEPD_BLACK);
-  const char* updatemode;
-  if (display.epd2.hasFastPartialUpdate)
-  {
-    updatemode = fpm;
-  }
-  else if (display.epd2.hasPartialUpdate)
-  {
-    updatemode = spm;
-  }
-  else
-  {
-    updatemode = npm;
-  }
-  // do this outside of the loop
-  int16_t tbx, tby; uint16_t tbw, tbh;
-  // center update text
-  display.getTextBounds(fullscreen, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t utx = ((display.width() - tbw) / 2) - tbx;
-  uint16_t uty = ((display.height() / 4) - tbh / 2) - tby;
-  // center update mode
-  display.getTextBounds(updatemode, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t umx = ((display.width() - tbw) / 2) - tbx;
-  uint16_t umy = ((display.height() * 3 / 4) - tbh / 2) - tby;
-  // center HelloWorld
-  display.getTextBounds(HelloWorld, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t hwx = ((display.width() - tbw) / 2) - tbx;
-  uint16_t hwy = ((display.height() - tbh) / 2) - tby;
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(hwx, hwy);
-    display.print(HelloWorld);
-    display.setCursor(utx, uty);
-    display.print(fullscreen);
-    display.setCursor(umx, umy);
-    display.print(updatemode);
-  }
-  while (display.nextPage());
-  //Serial.println("helloFullScreenPartialMode done");
-}
-
-void helloArduino()
-{
-  //Serial.println("helloArduino");
-  display.setRotation(1);
-  display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
-  int16_t tbx, tby; uint16_t tbw, tbh;
-  // align with centered HelloWorld
-  display.getTextBounds(HelloWorld, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  // height might be different
-  display.getTextBounds(HelloArduino, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t y = ((display.height() / 4) - tbh / 2) - tby; // y is base line!
-  // make the window big enough to cover (overwrite) descenders of previous text
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    //display.drawRect(x, y - tbh, tbw, tbh, GxEPD_BLACK);
-    display.setCursor(x, y);
-    display.print(HelloArduino);
-  }
-  while (display.nextPage());
-  delay(1000);
-  //Serial.println("helloArduino done");
-}
-
-void helloEpaper()
-{
-  //Serial.println("helloEpaper");
-  display.setRotation(1);
-  display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
-  int16_t tbx, tby; uint16_t tbw, tbh;
-  // align with centered HelloWorld
-  display.getTextBounds(HelloWorld, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  // height might be different
-  display.getTextBounds(HelloEpaper, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t y = ((display.height() * 3 / 4) - tbh / 2) - tby; // y is base line!
-  // make the window big enough to cover (overwrite) descenders of previous text
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(x, y);
-    display.print(HelloEpaper);
-  }
-  while (display.nextPage());
-  //Serial.println("helloEpaper done");
-}
-
-// test partial window issue on GDEW0213Z19 and GDEH029Z13
-void stripeTest()
-{
-  helloStripe(104);
-  delay(2000);
-  helloStripe(96);
-}
-
-const char HelloStripe[] = "Hello Stripe!";
-
-void helloStripe(uint16_t pw_xe) // end of partial window in physcal x direction
-{
-  //Serial.print("HelloStripe("); Serial.print(pw_xe); Serial.println(")");
-  display.setRotation(3);
-  display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
-  int16_t tbx, tby; uint16_t tbw, tbh;
-  display.getTextBounds(HelloStripe, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-  }
-  while (display.nextPage());
-  //Serial.println("HelloStripe done");
-}
-
-#if defined(ESP8266) || defined(ESP32)
-#include <StreamString.h>
-#define PrintString StreamString
-#else
-class PrintString : public Print, public String
-{
-  public:
-    size_t write(uint8_t data) override
-    {
-      return concat(char(data));
-    };
-};
-#endif
-
-void helloValue(double v, int digits)
-{
-  //Serial.println("helloValue");
-  display.setRotation(1);
-  display.setTextColor(display.epd2.hasColor ? GxEPD_RED : GxEPD_BLACK);
-  PrintString valueString;
-  valueString.print(v, digits);
-  int16_t tbx, tby; uint16_t tbw, tbh;
-  display.getTextBounds(valueString, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  uint16_t y = ((display.height() * 3 / 4) - tbh / 2) - tby; // y is base line!
-  // show what happens, if we use the bounding box for partial window
-  uint16_t wx = (display.width() - tbw) / 2;
-  uint16_t wy = ((display.height() * 3 / 4) - tbh / 2);
-  display.setPartialWindow(wx, wy, tbw, tbh);
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(x, y);
-    display.print(valueString);
-  }
-  while (display.nextPage());
-  delay(2000);
-  // make the partial window big enough to cover the previous text
-  uint16_t ww = tbw; // remember window width
-  display.getTextBounds(HelloEpaper, 0, 0, &tbx, &tby, &tbw, &tbh);
-  // adjust, because HelloEpaper was aligned, not centered (could calculate this to be precise)
-  ww = max(ww, uint16_t(tbw + 12)); // 12 seems ok
-  wx = (display.width() - tbw) / 2;
-  // make the window big enough to cover (overwrite) descenders of previous text
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(x, y);
-    display.print(valueString);
-  }
-  while (display.nextPage());
-  //Serial.println("helloValue done");
-}
-
-void deepSleepTest()
-{
-  //Serial.println("deepSleepTest");
-  const char hibernating[] = "hibernating ...";
-  const char wokeup[] = "woke up";
-  const char from[] = "from deep sleep";
-  const char again[] = "again";
-  display.setRotation(1);
-  display.setTextColor(GxEPD_BLACK);
-  int16_t tbx, tby; uint16_t tbw, tbh;
-  // center text
-  display.getTextBounds(hibernating, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t x = ((display.width() - tbw) / 2) - tbx;
-  uint16_t y = ((display.height() - tbh) / 2) - tby;
-  display.setFullWindow();
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(x, y);
-    display.print(hibernating);
-  }
-  while (display.nextPage());
-  display.hibernate();
-  delay(5000);
-  display.getTextBounds(wokeup, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t wx = (display.width() - tbw) / 2;
-  uint16_t wy = ((display.height() / 3) - tbh / 2) - tby; // y is base line!
-  display.getTextBounds(from, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t fx = (display.width() - tbw) / 2;
-  uint16_t fy = ((display.height() * 2 / 3) - tbh / 2) - tby; // y is base line!
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(wx, wy);
-    display.print(wokeup);
-    display.setCursor(fx, fy);
-    display.print(from);
-  }
-  while (display.nextPage());
-  delay(5000);
-  display.getTextBounds(hibernating, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t hx = (display.width() - tbw) / 2;
-  uint16_t hy = ((display.height() / 3) - tbh / 2) - tby; // y is base line!
-  display.getTextBounds(again, 0, 0, &tbx, &tby, &tbw, &tbh);
-  uint16_t ax = (display.width() - tbw) / 2;
-  uint16_t ay = ((display.height() * 2 / 3) - tbh / 2) - tby; // y is base line!
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.setCursor(hx, hy);
-    display.print(hibernating);
-    display.setCursor(ax, ay);
-    display.print(again);
-  }
-  while (display.nextPage());
-  display.hibernate();
-  //Serial.println("deepSleepTest done");
-}
-
-void showBox(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool partial)
-{
-  //Serial.println("showBox");
-  display.setRotation(1);
-  if (partial)
-  {
-    display.setPartialWindow(x, y, w, h);
-  }
-  else
-  {
-    display.setFullWindow();
-  }
-  display.firstPage();
-  do
-  {
-    display.fillScreen(GxEPD_WHITE);
-    display.fillRect(x, y, w, h, GxEPD_BLACK);
-  }
-  while (display.nextPage());
-  //Serial.println("showBox done");
-}
-
-void drawCornerTest()
-{
-  display.setFullWindow();
-  display.setTextColor(GxEPD_BLACK);
-  for (uint16_t r = 0; r <= 4; r++)
-  {
-    display.setRotation(r);
-    display.firstPage();
-    do
-    {
-      display.fillScreen(GxEPD_WHITE);
-      display.fillRect(0, 0, 8, 8, GxEPD_BLACK);
-      display.fillRect(display.width() - 18, 0, 16, 16, GxEPD_BLACK);
-      display.fillRect(display.width() - 25, display.height() - 25, 24, 24, GxEPD_BLACK);
-      display.fillRect(0, display.height() - 33, 32, 32, GxEPD_BLACK);
-      display.setCursor(display.width() / 2, display.height() / 2);
-      display.print(display.getRotation());
-    }
-    while (display.nextPage());
-    delay(2000);
-  }
-}
-
-void drawGrid()
-{
-  uint16_t x, y;
-  display.firstPage();
-  do
-  {
-    x = 0;
-    do
-    {
-      display.drawLine(x, 0, x, display.height() - 1, GxEPD_BLACK);
-      x += 10;
-    }
-    while (x < display.width());
-    y = 0;
-    do
-    {
-      display.drawLine(0, y, display.width() - 1, y, GxEPD_BLACK);
-      y += 10;
-    }
-    while (y < display.height());
-    x = 0;
-    do
-    {
-      display.fillCircle(x, display.height() / 2, 3, GxEPD_BLACK);
-      x += 50;
-    }
-    while (x <= display.width());
-    y = 0;
-    do
-    {
-      display.fillCircle(display.width() / 2, y, 3, GxEPD_BLACK);
-      y += 50;
-    }
-    while (y <= display.height());
-  }
-  while (display.nextPage());
-}
-
-void drawBitmaps()
-{
-  display.setRotation(0);
-  display.setFullWindow();
-  // 3-color
-  drawBitmaps3c104x212();
-}
-
-
-struct bitmap_pair
-{
-  const unsigned char* black;
-  const unsigned char* red;
-};
-
-void drawBitmaps3c104x212()
-{
-  bitmap_pair bitmap_pairs[] =
-  {
-    {bitmap_black, bitmap_red},
-  };
-  if (display.epd2.panel == GxEPD2::GDEW0213Z16)
-  {
-    for (uint16_t i = 0; i < sizeof(bitmap_pairs) / sizeof(bitmap_pair); i++)
-    {
-      display.firstPage();
-      do
-      {
-        display.fillScreen(GxEPD_WHITE);
-        display.drawInvertedBitmap(0, 0, bitmap_pairs[i].black, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_BLACK);
-        display.drawBitmap(0, 0, bitmap_pairs[i].red, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_RED);
-      }
-      while (display.nextPage());
-      delay(2000);
-    }
-  }
+  display.powerOff();
+  display.end();
 }
