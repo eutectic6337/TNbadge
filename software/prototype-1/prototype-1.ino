@@ -449,7 +449,9 @@ SimpleBLE ble;
 #define SSIDprefix "TNbadge"
 char SSID[(sizeof SSIDprefix)+(sizeof MAC)*2] = SSIDprefix;
 const char WiFi_password[] = "insert password here";
+#if 0
 WiFiServer server(80);
+#endif
 
 void setup_radio() {
   MAC = ESP.getEfuseMac();
@@ -457,6 +459,7 @@ void setup_radio() {
   // ======== CUSTOMIZE Bluetooth HERE ========
   ble.begin("ESP32 SimpleBLE");
 
+#if 0 //approx 50k
   BLEDevice::init("Long name works now");
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
@@ -475,10 +478,11 @@ void setup_radio() {
   pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
+#endif
 
   // ======== CUSTOMIZE WiFi HERE ========
   sprintf(SSID + (sizeof SSIDprefix) - 1, "%012llX", MAC);
-
+#if 0 // about 400k
   // You can remove the password parameter if you want the AP to be open.
   // a valid password must have more than 7 characters
   if (!WiFi.softAP(SSID, WiFi_password)) {
@@ -489,6 +493,7 @@ void setup_radio() {
   LOG("SSID:");LOGln(SSID);
   LOG("AP IP address:");LOGln(myIP);
   server.begin();
+#endif
 }
 void update_simpleBLE(){
     String out = "BLE32 name: ";
@@ -500,6 +505,7 @@ void update_radio() {
   // ======== CUSTOMIZE Bluetooth HERE ========
 
   // ======== CUSTOMIZE WiFi HERE ========
+#if 0 // about 30k
   //FIXME: re-work to be non-blocking
   WiFiClient client = server.available();   // listen for incoming clients
 
@@ -549,6 +555,7 @@ void update_radio() {
     client.stop();
     LOGln("Client Disconnected.");
   }
+#endif
 }
 
 
@@ -697,15 +704,7 @@ void update_epaper_display()
   delay(1000);
   helloEpaper();
   delay(1000);
-  //helloValue(123.9, 1);
-  //delay(1000);
-  //drawGrid(); return;
   drawBitmaps();
-  drawGraphics();
-  //return;
-  //drawCornerTest();
-  //showBox(16, 16, 48, 32, false);
-  //showBox(16, 56, 48, 32, true);
   display.powerOff();
   deepSleepTest();
   Serial.println("setup done");
@@ -1119,38 +1118,10 @@ void drawBitmaps()
 {
   display.setRotation(0);
   display.setFullWindow();
-#ifdef _GxBitmaps104x212_H_
-  drawBitmaps104x212();
-#endif
   // 3-color
-#ifdef _GxBitmaps3c104x212_H_
   drawBitmaps3c104x212();
-#endif
 }
 
-#ifdef _GxBitmaps104x212_H_
-void drawBitmaps104x212()
-{
-  const unsigned char* bitmaps[] =
-  {
-    WS_Bitmap104x212, Bitmap104x212_1, Bitmap104x212_2, Bitmap104x212_3
-  };
-  if ((display.epd2.WIDTH == 104) && (display.epd2.HEIGHT == 212) && !display.epd2.hasColor)
-  {
-    for (uint16_t i = 0; i < sizeof(bitmaps) / sizeof(char*); i++)
-    {
-      display.firstPage();
-      do
-      {
-        display.fillScreen(GxEPD_WHITE);
-        display.drawBitmap(0, 0, bitmaps[i], 104, 212, GxEPD_BLACK);
-      }
-      while (display.nextPage());
-      delay(2000);
-    }
-  }
-}
-#endif
 
 struct bitmap_pair
 {
@@ -1158,14 +1129,11 @@ struct bitmap_pair
   const unsigned char* red;
 };
 
-#ifdef _GxBitmaps3c104x212_H_
 void drawBitmaps3c104x212()
 {
   bitmap_pair bitmap_pairs[] =
   {
-    {Bitmap3c104x212_1_black, Bitmap3c104x212_1_red},
-    {Bitmap3c104x212_2_black, Bitmap3c104x212_2_red},
-    {WS_Bitmap3c104x212_black, WS_Bitmap3c104x212_red}
+    {bitmap_black, bitmap_red},
   };
   if (display.epd2.panel == GxEPD2::GDEW0213Z16)
   {
@@ -1176,31 +1144,10 @@ void drawBitmaps3c104x212()
       {
         display.fillScreen(GxEPD_WHITE);
         display.drawInvertedBitmap(0, 0, bitmap_pairs[i].black, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_BLACK);
-        if (bitmap_pairs[i].red == WS_Bitmap3c104x212_red)
-        {
-          display.drawInvertedBitmap(0, 0, bitmap_pairs[i].red, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_RED);
-        }
-        else display.drawBitmap(0, 0, bitmap_pairs[i].red, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_RED);
+        display.drawBitmap(0, 0, bitmap_pairs[i].red, display.epd2.WIDTH, display.epd2.HEIGHT, GxEPD_RED);
       }
       while (display.nextPage());
       delay(2000);
     }
   }
-}
-#endif
-
-void drawGraphics()
-{
-  display.setRotation(0);
-  display.firstPage();
-  do
-  {
-    display.drawRect(display.width() / 8, display.height() / 8, display.width() * 3 / 4, display.height() * 3 / 4, GxEPD_BLACK);
-    display.drawLine(display.width() / 8, display.height() / 8, display.width() * 7 / 8, display.height() * 7 / 8, GxEPD_BLACK);
-    display.drawLine(display.width() / 8, display.height() * 7 / 8, display.width() * 7 / 8, display.height() / 8, GxEPD_BLACK);
-    display.drawCircle(display.width() / 2, display.height() / 2, display.height() / 4, GxEPD_BLACK);
-    display.drawPixel(display.width() / 4, display.height() / 2 , GxEPD_BLACK);
-    display.drawPixel(display.width() * 3 / 4, display.height() / 2 , GxEPD_BLACK);
-  }
-  while (display.nextPage());
 }
