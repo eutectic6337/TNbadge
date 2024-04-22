@@ -35,6 +35,7 @@ typedef unsigned long Time;
 #define LOGln (void)
 #endif
 
+
 const Time BOOST_CONVERTER_STARTUP_ms = 500;
 const unsigned long SERIAL_SPEED = 115200;
 void setup_serial()
@@ -43,6 +44,9 @@ void setup_serial()
 	LOGln("badge is up");
 }
 
+
+/* wait a random time between 5 and 20 minutes
+   to write updated preferences back to non-volatile storage */
 const Time MINIMUM_s_TO_UPDATE_PREFS = 300;
 const Time MAXIMUM_s_TO_UPDATE_PREFS = 1200;
 #include <Preferences.h>
@@ -104,6 +108,7 @@ void update_SAOs()
   // ======== CUSTOMIZE HERE ========
 }
 
+
 // ======== human input - pushbutton
 Digital_Input pushbutton = pD9;//(Vbutton)
 unsigned pushbutton_debounced = 1;
@@ -132,6 +137,7 @@ void update_pushbutton() {
 // IDEA: hold pushbutton down for 5s -> go into deep sleep, wake up on button press
 // see deep-sleep sample at https://wiki.seeedstudio.com/XIAO_ESP32C3_Getting_Started/
 // DOWNER: only D0..D3 supported for wakeup; could use a SAO GPIOpin, though.
+
 
 // ======== environmental/status input - lightdark sensor
 Analog_Input lightdark_sensor = pA3;//(Vdark)
@@ -168,6 +174,7 @@ void update_lightdark_sensor() {
   }
 }
 
+
 // ======== environmental/status input - battery monitor
 Analog_Input half_battery_voltage = pA2;//(Vmeasure)
 unsigned long battery_millivolts;
@@ -202,6 +209,7 @@ void update_battery_monitor() {
     LOG("battery:");LOG(battery_millivolts);LOGln("mV");
   }
 }
+
 
 // ======== blinky outputs - single LED
 Digital_Output level_shifter_OE = pD7;
@@ -267,6 +275,7 @@ void update_single_LED() {
     break;
   }
 }
+
 
 // ======== blinky outputs - city smartLEDs
 #include <SPI.h>
@@ -370,6 +379,7 @@ const LED_fade red_blue_sawtooth[] = {
   {1,.c=CRGB::Black}, {999,.c=CRGB::Red},
   {1,.c=CRGB::Black}, {999,.c=CRGB::Blue}, {0}};//cycle=2000
 
+
 // ======== epaper display (EPD)
 //FIXME: add ESP32C3 hardware SPI support to GxEPD2
 #define USE_HSPI_FOR_EPD
@@ -416,7 +426,10 @@ void setup_epaper_display() {
   digitalWrite(level_shifter_OE, HIGH);
 }
 
+
 // ======== on-chip radio: BLE and/or WiFi
+uint64_t MAC;
+
 #include <BLEDevice.h>
 #include <BLEAdvertising.h>
 #include <BLEUtils.h>
@@ -424,19 +437,46 @@ void setup_epaper_display() {
 #include <BLEAdvertisedDevice.h>
 #include <BLEBeacon.h>
 #include <BLEServer.h>
+#define SERVICE_UUID        "6050bcfe-a8f8-4ad6-961d-5af97ac37e09"
+#define CHARACTERISTIC_UUID "cab5c6ff-31a7-4b2a-aada-4bae02ca1ca7"
+#include "SimpleBLE.h"
+SimpleBLE ble;
 
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiAP.h>
 #include <WiFiMulti.h>
-uint64_t MAC;
 #define SSIDprefix "TNbadge"
 char SSID[(sizeof SSIDprefix)+(sizeof MAC)*2] = SSIDprefix;
 const char WiFi_password[] = "insert password here";
 WiFiServer server(80);
+
 void setup_radio() {
-  // ======== CUSTOMIZE HERE ========
   MAC = ESP.getEfuseMac();
+
+  // ======== CUSTOMIZE Bluetooth HERE ========
+  ble.begin("ESP32 SimpleBLE");
+
+  BLEDevice::init("Long name works now");
+  BLEServer *pServer = BLEDevice::createServer();
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+                                         CHARACTERISTIC_UUID,
+                                         BLECharacteristic::PROPERTY_READ |
+                                         BLECharacteristic::PROPERTY_WRITE
+                                       );
+
+  pCharacteristic->setValue("Hello World says Neil");
+  pService->start();
+  // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->setScanResponse(true);
+  pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
+  pAdvertising->setMinPreferred(0x12);
+  BLEDevice::startAdvertising();
+
+  // ======== CUSTOMIZE WiFi HERE ========
   sprintf(SSID + (sizeof SSIDprefix) - 1, "%012llX", MAC);
 
   // You can remove the password parameter if you want the AP to be open.
@@ -450,9 +490,16 @@ void setup_radio() {
   LOG("AP IP address:");LOGln(myIP);
   server.begin();
 }
+void update_simpleBLE(){
+    String out = "BLE32 name: ";
+    out += String(millis() / 1000);
+    Serial.println(out);
+    ble.begin(out);
+}
 void update_radio() {
-  // ======== CUSTOMIZE HERE ========
+  // ======== CUSTOMIZE Bluetooth HERE ========
 
+  // ======== CUSTOMIZE WiFi HERE ========
   //FIXME: re-work to be non-blocking
   WiFiClient client = server.available();   // listen for incoming clients
 
