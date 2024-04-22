@@ -27,7 +27,7 @@ typedef const int Digital_Output;
 typedef unsigned long Time;
 
 const Time BOOST_CONVERTER_STARTUP_ms = 500;
-const unsigned long SERIAL_SPEED = 57600;
+const unsigned long SERIAL_SPEED = 115200;
 
 #include "XIAO-ESP32C3-pinout.h"
 // functions on board:
@@ -390,9 +390,12 @@ void setup_serial()
 
 
 void setup() {
+  setup_serial();// so other code can produce diagnostics, or interact
+  /* odd-one-out:
+     only modify EPD at powerup, and only if explicitly requested
+     because EPD has limited lifetime and slow response
+     so we generally treat it as a static display */
   setup_epaper_display();
-
-  setup_serial();
 
   setup_battery_monitor();
   setup_lightdark_sensor();
@@ -402,6 +405,7 @@ void setup() {
   setup_city_smartLEDs();
 
   setup_SAOs();
+  setup_radio();
 }
 
 // the loop function runs over and over again forever
@@ -414,6 +418,7 @@ void loop() {
   update_city_smartLEDs();
 
   update_SAOs();
+  update_radio();
 }
 
 
