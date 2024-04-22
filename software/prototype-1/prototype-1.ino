@@ -235,7 +235,7 @@ void setup_city_smartLEDs() {
   FastLED.setMaxPowerInMilliWatts(500);
 }
 int any_LED_changed = 0;
-void update_city(enum LED_city_index i) {
+void update_city(int i) {
   // ======== CUSTOMIZE HERE ========
 
   /* How It Works:
@@ -256,7 +256,7 @@ void update_city(enum LED_city_index i) {
   }
 }
 void update_city_smartLEDs() {
-  for(LED_city_index i = LED_Memphis; i <= LED_Knoxville; i++) {
+  for(int i = LED_Memphis; i <= LED_Knoxville; i++) {
     update_city(i);
   }
   if (any_LED_changed) {
@@ -466,10 +466,11 @@ void loop2() {
 // 3-color e-papers
 GxEPD2_3C<GxEPD2_213c,     MAX_HEIGHT_3C(GxEPD2_213c)>     display(GxEPD2_213c(EPD_cs, EPD_data_cmd, EPD_Reset, EPD_Busy));     // GDEW0213Z16 104x212, UC8151 (IL0373)
 //GxEPD2_3C<GxEPD2_213_Z19c, MAX_HEIGHT_3C(GxEPD2_213_Z19c)> display(GxEPD2_213_Z19c(EPD_cs, EPD_data_cmd, EPD_Reset, EPD_Busy)); // GDEH0213Z19 104x212, UC8151D
-//GxEPD2_3C<GxEPD2_213_Z98c, MAX_HEIGHT_3C(GxEPD2_213_Z98c)> display(GxEPD2_213_Z98c(EPD_cs, EPD_data_cmd, EPD_Reset, EPD_Busy)); // GDEY0213Z98 122x250, SSD1680
 
 #include <pgmspace.h>
 const unsigned char bitmap_black[2762] PROGMEM = {
+  // size 2762 came from sample code; actual bitmap has only 2756 bytes
+  // I'm not sure why the difference
   #include "black.h"
 };
 const unsigned char bitmap_red[2762] PROGMEM = {
