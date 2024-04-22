@@ -234,6 +234,12 @@ void setup_city_smartLEDs() {
 	FastLED.setBrightness(100);
   FastLED.setMaxPowerInMilliWatts(500);
 }
+struct {
+  Time wait_until;
+  CRGB new_LED;
+  Time time_step;
+  fract8 step;
+} city[NUM_SMART_LEDS];
 int any_LED_changed = 0;
 void update_city(int i) {
   // ======== CUSTOMIZE HERE ========
@@ -242,17 +248,15 @@ void update_city(int i) {
      a Finite State Machine for each LED has *n* states
      each fade state waits for each step in its respective processes
    */
-  static struct {
-    Time wait_until;
-    CRGB new_LED;
-    Time time_step;
-    fract8 step;
-  } city[NUM_SMART_LEDS];
 
   if (millis() >= city[i].wait_until) {
       any_LED_changed = 1;
       city[i].wait_until = millis() + city[i].time_step;
       leds[i] = leds[i].lerp8(city[i].new_LED, city[i].step);
+      if (city[i].step == 255) {
+        /* set new transition for this city */
+      }
+      city[i].step++;
   }
 }
 void update_city_smartLEDs() {
@@ -340,9 +344,6 @@ void setup_epaper_display() {
      and slide the "enable epaper update" switch back to "blink LEDs".
    */
   pinMode(pushbutton, INPUT);
-  pinMode(smart_LED_data, OUTPUT);
-  pinMode(smart_LED_clock, OUTPUT);
-  FastLED.addLeds<APA102, smart_LED_data, smart_LED_clock, BGR>(leds, NUM_SMART_LEDS);  // BGR orde
   /* "enable epaper update" switches pullup on EPD_Reset line to 3.3V */
   pinMode(EPD_Reset, INPUT);
   if (digitalRead(pushbutton) == 0 && digitalRead(EPD_Reset) == 1) update_epaper_display();
