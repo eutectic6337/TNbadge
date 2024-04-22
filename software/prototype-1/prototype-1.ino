@@ -63,8 +63,8 @@ void setup_prefs()
   randomSeed(conf.seed);
   uint32_t t = random(MINIMUM_s_TO_UPDATE_PREFS, MAXIMUM_s_TO_UPDATE_PREFS);
   conf.next = millis()/1000 + t;
-  LOG("seed=");LOGln(conf.seed);
-  LOG("seconds to next prefs write=");LOGln(t);
+  LOG("seed:");LOGln(conf.seed);
+  LOG("seconds to first prefs write:");LOGln(t);
 }
 void update_prefs()
 {
@@ -73,8 +73,10 @@ void update_prefs()
     conf.seed += micros();
     prefs.putULong64("seed", conf.seed);
     prefs.end();
-    conf.next = random(MINIMUM_s_TO_UPDATE_PREFS, MAXIMUM_s_TO_UPDATE_PREFS);
-    LOG("seconds to next prefs write=");LOGln(t);
+
+    uint32_t t = random(MINIMUM_s_TO_UPDATE_PREFS, MAXIMUM_s_TO_UPDATE_PREFS);
+    conf.next = millis()/1000 + t;
+    LOG("seconds to next prefs write:");LOGln(t);
   }
 }
 
@@ -123,6 +125,7 @@ void update_pushbutton() {
   }
   else if (millis() >= debounce_until) {
     pushbutton_debounced = prev;
+    LOG("pushbutton:");LOGln(pushbutton_debounced? "HIGH": "LOW");
   }
 }
 
@@ -161,6 +164,7 @@ void update_lightdark_sensor() {
     raw[0] = analogRead(lightdark_sensor);
     sum += raw[0];
     lightdark_smoothed = sum/samples;
+    LOG("lightdark:");LOGln(lightdark_smoothed);
   }
 }
 
@@ -195,6 +199,7 @@ void update_battery_monitor() {
     raw[0] = analogReadMilliVolts(half_battery_voltage);
     sum += raw[0];
     battery_millivolts = sum/samples *2;
+    LOG("battery:");LOG(battery_millivolts);LOGln("mV");
   }
 }
 
@@ -424,14 +429,79 @@ void setup_epaper_display() {
 #include <WiFiClient.h>
 #include <WiFiAP.h>
 #include <WiFiMulti.h>
-//
 uint64_t MAC;
+#define SSIDprefix "TNbadge"
+char SSID[(sizeof SSIDprefix)+(sizeof MAC)*2] = SSIDprefix;
+const char WiFi_password[] = "insert password here";
+WiFiServer server(80);
 void setup_radio() {
-  MAC = ESP.getEfuseMac();
   // ======== CUSTOMIZE HERE ========
+  MAC = ESP.getEfuseMac();
+  sprintf(SSID + (sizeof SSIDprefix) - 1, "%012llX", MAC);
+
+  // You can remove the password parameter if you want the AP to be open.
+  // a valid password must have more than 7 characters
+  if (!WiFi.softAP(SSID, WiFi_password)) {
+    LOGln("Soft AP creation failed.");
+    return;
+  }
+  IPAddress myIP = WiFi.softAPIP();
+  LOG("SSID:");LOGln(SSID);
+  LOG("AP IP address:");LOGln(myIP);
+  server.begin();
 }
 void update_radio() {
   // ======== CUSTOMIZE HERE ========
+
+  //FIXME: re-work to be non-blocking
+  WiFiClient client = server.available();   // listen for incoming clients
+
+  if (client) {                             // if you get a client,
+    LOGln("New Client.");           // print a message out the serial port
+    String currentLine = "";                // make a String to hold incoming data from the client
+    while (client.connected()) {            // loop while the client's connected
+      if (client.available()) {             // if there's bytes to read from the client,
+        char c = client.read();             // read a byte, then
+        Serial.write(c);                    // print it out the serial monitor
+        if (c == '\n') {                    // if the byte is a newline character
+
+          // if the current line is blank, you got two newline characters in a row.
+          // that's the end of the client HTTP request, so send a response:
+          if (currentLine.length() == 0) {
+            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+            // and a content-type so the client knows what's coming, then a blank line:
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-type:text/html");
+            client.println();
+
+            // the content of the HTTP response follows the header:
+            client.print("Click <a href=\"/H\">here</a> to turn ON the LED.<br>");
+            client.print("Click <a href=\"/L\">here</a> to turn OFF the LED.<br>");
+
+            // The HTTP response ends with another blank line:
+            client.println();
+            // break out of the while loop:
+            break;
+          } else {    // if you got a newline, then clear currentLine:
+            currentLine = "";
+          }
+        } else if (c != '\r') {  // if you got anything else but a carriage return character,
+          currentLine += c;      // add it to the end of the currentLine
+        }
+
+        // Check to see if the client request was "GET /H" or "GET /L":
+        if (currentLine.endsWith("GET /H")) {
+          //digitalWrite(LED_BUILTIN, HIGH);               // GET /H turns the LED on
+        }
+        if (currentLine.endsWith("GET /L")) {
+          //digitalWrite(LED_BUILTIN, LOW);                // GET /L turns the LED off
+        }
+      }
+    }
+    // close the connection:
+    client.stop();
+    LOGln("Client Disconnected.");
+  }
 }
 
 
