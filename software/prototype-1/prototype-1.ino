@@ -441,7 +441,7 @@ uint64_t MAC;
 // https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Assigned_Numbers/out/en/Assigned_Numbers.pdf
 #define SERVICE_UUID        "6050bcfe-a8f8-4ad6-961d-5af97ac37e09"
 #define CHARACTERISTIC_UUID "cab5c6ff-31a7-4b2a-aada-4bae02ca1ca7"
-#if 0
+#if 0 //approx 500k
 #include "SimpleBLE.h"
 SimpleBLE ble;
 #endif
@@ -453,7 +453,7 @@ SimpleBLE ble;
 #define SSIDprefix "TNbadge"
 char SSID[(sizeof SSIDprefix)+(sizeof MAC)*2] = SSIDprefix;
 const char WiFi_password[] = "insert password here";
-#if 0
+#if 0 //approx 70k
 WiFiServer server(80);
 #endif
 
@@ -462,11 +462,11 @@ void setup_radio() {
 
   // ======== CUSTOMIZE Bluetooth HERE ========
   // IDEA: https://en.wikipedia.org/wiki/Bluetooth_Low_Energy_beacon
-#if 0
+#if 0 //approx 120k
   ble.begin("ESP32 SimpleBLE");
 #endif
 
-#if 0 //approx 50k
+#if 0 //approx 700k
   BLEDevice::init("Long name works now");
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
@@ -489,7 +489,7 @@ void setup_radio() {
 
   // ======== CUSTOMIZE WiFi HERE ========
   sprintf(SSID + (sizeof SSIDprefix) - 1, "%012llX", MAC);
-#if 0 //approx 400k
+#if 0 //approx 370k
   // You can remove the password parameter if you want the AP to be open.
   // a valid password must have more than 7 characters
   if (!WiFi.softAP(SSID, WiFi_password)) {
@@ -514,7 +514,7 @@ void update_radio() {
   // ======== CUSTOMIZE Bluetooth HERE ========
 
   // ======== CUSTOMIZE WiFi HERE ========
-#if 0 //approx 30k
+#if 0 //approx 15k
   //FIXME: re-work to be non-blocking
   WiFiClient client = server.available();   // listen for incoming clients
 
