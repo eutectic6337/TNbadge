@@ -14,7 +14,6 @@
 //    initialized in setup_FEATURE(),
 //    maintained in update_FEATURE()
 //
-#include <Arduino.h>
 
 //syntactic sugar
 typedef const int GPIOpin;
@@ -55,7 +54,7 @@ struct {
   uint64_t seed;// for random number generator
   Time next;
 } conf;
-#include "esp32c3/rom/rtc.h"
+#include "rom/rtc.h"
 void setup_prefs()
 {
   prefs.begin("badge", /*readonly=*/true);
@@ -85,16 +84,15 @@ void update_prefs()
 }
 
 
-#include "XIAO-ESP32C3-pinout.h"
 // functions on board:
 
 // ======== Shitty Add-On v1.69bis (https://hackaday.com/2019/03/20/introducing-the-shitty-add-on-v1-69bis-standard/)
 #include <Wire.h> // I2C
 //
-GPIOpin SAO_GPIO1 = pD1;
-GPIOpin SAO_GPIO2 = pD0;
-GPIOpin SAO_SDA = pSDA;
-GPIOpin SAO_SCL = pSCL;
+GPIOpin SAO_GPIO1 = D1;
+GPIOpin SAO_GPIO2 = D0;
+GPIOpin SAO_SDA = SDA;
+GPIOpin SAO_SCL = SCL;
 void setup_SAOs()
 {
   // ======== CUSTOMIZE HERE ========old
@@ -111,7 +109,7 @@ void update_SAOs()
 
 
 // ======== human input - pushbutton
-Digital_Input pushbutton = pD9;//(Vbutton)
+Digital_Input pushbutton = D9;//(Vbutton)
 unsigned pushbutton_debounced = 1;
 void setup_pushbutton() {
   pinMode(pushbutton, INPUT);
@@ -141,7 +139,7 @@ void update_pushbutton() {
 
 
 // ======== environmental/status input - lightdark sensor
-Analog_Input lightdark_sensor = pA3;//(Vdark)
+Analog_Input lightdark_sensor = A3;//(Vdark)
 unsigned lightdark_smoothed;
 void setup_lightdark_sensor() {
   pinMode(lightdark_sensor, INPUT);
@@ -177,7 +175,7 @@ void update_lightdark_sensor() {
 
 
 // ======== environmental/status input - battery monitor
-Analog_Input half_battery_voltage = pA2;//(Vmeasure)
+Analog_Input half_battery_voltage = A2;//(Vmeasure)
 unsigned long battery_millivolts;
 void setup_battery_monitor() {
   pinMode(half_battery_voltage, INPUT);
@@ -213,8 +211,8 @@ void update_battery_monitor() {
 
 
 // ======== blinky outputs - single LED
-Digital_Output level_shifter_OE = pD7;
-Digital_Output single_LED = pD6;
+Digital_Output level_shifter_OE = D7;
+Digital_Output single_LED = D6;
 void setup_single_LED() {
   pinMode(single_LED, OUTPUT);
 }
@@ -284,8 +282,8 @@ void update_single_LED() {
 #define FASTLED_USE_GLOBAL_BRIGHTNESS 1
 #include <FastLED.h>
 //
-Digital_Output smart_LED_data = pMOSI;
-Digital_Output smart_LED_clock = pSCK;
+Digital_Output smart_LED_data = MOSI;
+Digital_Output smart_LED_clock = SCK;
 
 enum LED_city_index {
   LED_Memphis, LED_Clarkesville, LED_Nashville, LED_Chattanooga, LED_Knoxville,
@@ -385,7 +383,7 @@ const LED_fade red_blue_sawtooth[] = {
 
 // ======== epaper display (EPD)
 //FIXME: add ESP32C3 hardware SPI support to GxEPD2
-#define USE_HSPI_FOR_EPD
+//#define USE_HSPI_FOR_EPD
 #define ENABLE_GxEPD2_GFX 0
 //#include <GFX.h> // uncomment to use class GFX of library GFX_Root instead of Adafruit_GFX
 // Note: if you use this with ENABLE_GxEPD2_GFX 1:
@@ -396,12 +394,12 @@ const LED_fade red_blue_sawtooth[] = {
         EPD is powered only when other hardware is unpowered
         thanks to slide-switch SW3
  */
-Digital_Output EPD_SDI = pMOSI;
-Digital_Output EPD_SCLK = pSCK;
-Digital_Output EPD_cs = pD3;//(shared with Vdark)
-Digital_Output EPD_data_cmd = pD1;//(shared with SAO GPIO1)
-Digital_Output EPD_Reset = pD6;//(shared with single LED)
-Digital_Input EPD_Busy = pD0;//(shared with SAO GPIO2)
+Digital_Output EPD_SDI = MOSI;
+Digital_Output EPD_SCLK = SCK;
+Digital_Output EPD_cs = D3;//(shared with Vdark)
+Digital_Output EPD_data_cmd = D1;//(shared with SAO GPIO1)
+Digital_Output EPD_Reset = D6;//(shared with single LED)
+Digital_Input EPD_Busy = D0;//(shared with SAO GPIO2)
 void update_epaper_display();
 void setup_epaper_display() {
   /* After customizing your epaper display and downloading updated firmware,
@@ -505,10 +503,12 @@ void setup_radio() {
 #endif
 }
 void update_simpleBLE(){
+#if 0
     String out = "BLE32 name: ";
     out += String(millis() / 1000);
     Serial.println(out);
     ble.begin(out);
+#endif
 }
 void update_radio() {
   // ======== CUSTOMIZE Bluetooth HERE ========
