@@ -50,8 +50,13 @@ const Time MINIMUM_s_TO_UPDATE_PREFS = 300;
 const Time MAXIMUM_s_TO_UPDATE_PREFS = 1200;
 #include <Preferences.h>
 Preferences prefs;
+
+const uint8_t WIFI_PASSWORD_LENGTH = 20;
+char WiFi_password[WIFI_PASSWORD_LENGTH+1] = {0};
+
 struct {
   uint64_t seed;// for random number generator
+  char* pw = WiFi_password;// WiFi password
   Time next;
 } conf;
 #include "rom/rtc.h"
@@ -61,6 +66,7 @@ void setup_prefs()
   conf.seed = prefs.getULong64("seed") << 1
     + 1
     + rtc_get_reset_reason(0);
+  prefs.getString("pw", conf.pw, WIFI_PASSWORD_LENGTH);
   prefs.end();
 
   randomSeed(conf.seed);
@@ -75,6 +81,7 @@ void update_prefs()
     prefs.begin("badge", /*readonly=*/false);
     conf.seed += micros();
     prefs.putULong64("seed", conf.seed);
+    prefs.putString("pw", conf.pw);
     prefs.end();
 
     uint32_t t = random(MINIMUM_s_TO_UPDATE_PREFS, MAXIMUM_s_TO_UPDATE_PREFS);
@@ -503,10 +510,8 @@ void update_Bluetooth()
 #if 0 //approx 450k
 #include <WiFi.h>
 const Time WIFI_STABILITY_ms = 100;
-const uint8_t WIFI_PASSWORD_LENGTH = 20;
 #define SSIDprefix "TNbadge"
 char SSID[(sizeof SSIDprefix)+(sizeof MAC)*2] = SSIDprefix;
-char WiFi_password[WIFI_PASSWORD_LENGTH+1] = {0};
 const char WiFi_password_alphabet[] =
   "abcdefghijklmnoppqrstuvwxyz[];,./"
   "ABCDEFGHIJKKLMNOPQRSTUVWXYZ{}:<>?"
@@ -529,11 +534,13 @@ void setup_WiFi()
 {
   // ======== CUSTOMIZE WiFi HERE ========
   sprintf(SSID + (sizeof SSIDprefix) - 1, "%llX", MAC);
-  // generate a completely random password
-  for (int i = 0; i < WIFI_PASSWORD_LENGTH; i++) {
-    WiFi_password[i] = WiFi_password_alphabet[random((sizeof WiFi_password_alphabet)-1)];
+  // generate a completely random password, if not already pulled from prefs
+  if (WiFi_password[0] == 0) {
+    for (int i = 0; i < WIFI_PASSWORD_LENGTH; i++) {
+      WiFi_password[i] = WiFi_password_alphabet[random((sizeof WiFi_password_alphabet)-1)];
+    }
+    WiFi_password[(sizeof WiFi_password_alphabet)-1] =0;
   }
-  WiFi_password[(sizeof WiFi_password_alphabet)-1] =0;
 
   // Set to station+AP mode and disconnect from an AP if it was previously connected.
   WiFi.mode(WIFI_AP_STA);
