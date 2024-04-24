@@ -34,6 +34,8 @@ typedef unsigned long Time;
 #define LOGln (void)
 #endif
 
+#include <stdio.h>
+#include <string.h>
 
 const Time BOOST_CONVERTER_STARTUP_ms = 500;
 const unsigned long SERIAL_SPEED = 115200;
@@ -56,7 +58,7 @@ char WiFi_password[WIFI_PASSWORD_LENGTH+1] = {0};
 
 struct {
   uint64_t seed;// for random number generator
-  char* pw = WiFi_password;// WiFi password
+  char* pw = WiFi_password;
   Time next;
 } conf;
 #include "rom/rtc.h"
@@ -322,13 +324,22 @@ void update_city(int i) {
    */
 
   if (millis() >= city[i].wait_until) {
-      any_LED_changed = 1;
-      city[i].wait_until = millis() + city[i].time_step;
-      leds[i] = leds[i].lerp8(city[i].new_LED, city[i].step);
-      if (city[i].step == 255) {
-        /* set new transition for this city */
+    any_LED_changed = 1;
+    city[i].wait_until = millis() + city[i].time_step;
+    leds[i] = leds[i].lerp8(city[i].new_LED, city[i].step);
+    if (city[i].step == 255) {
+      /* set new transition for this city */
+
+      switch (i) {
+      case LED_Memphis: LOGln("Memphis"); break;
+      case LED_Clarkesville: LOGln("Clarkesville"); break;
+      case LED_Nashville: LOGln("Nashville"); break;
+      case LED_Chattanooga: LOGln("Chattanooga"); break;
+      case LED_Knoxville: LOGln("Knoxville"); break;
+      default: LOGln("I have no idea");
       }
-      city[i].step++;
+    }
+    city[i].step++;
   }
 }
 void update_city_smartLEDs() {
@@ -507,7 +518,7 @@ void update_Bluetooth()
 
 //284050
 //732912
-#if 0 //approx 450k
+#if 1 //approx 450k
 #include <WiFi.h>
 const Time WIFI_STABILITY_ms = 100;
 #define SSIDprefix "TNbadge"
@@ -530,10 +541,46 @@ WiFiServer server(80);
    - filtering by known SSID prefix,
    - sorting by RSSID
  */
+
+ /* possibly useful magic numbers for API
+
+ may want to tweak Tx power
+ .setTxPower()
+    WIFI_POWER_19_5dBm
+    WIFI_POWER_19dBm
+    WIFI_POWER_18_5dBm
+    WIFI_POWER_17dBm
+    WIFI_POWER_15dBm
+    WIFI_POWER_13dBm
+    WIFI_POWER_11dBm
+    WIFI_POWER_8_5dBm
+    WIFI_POWER_7dBm
+    WIFI_POWER_5dBm
+    WIFI_POWER_2dBm
+    WIFI_POWER_MINUS_1dBm
+
+sadly, doesn't look like we can use other than WPA2 or OPEN on soft-AP
+.setMinSecurity()
+    WIFI_AUTH_WPA3_PSK
+    WIFI_AUTH_WPA2_WPA3_PSK
+    WIFI_AUTH_WPA2_PSK
+
+    WIFI_AUTH_OPEN
+    WIFI_AUTH_WEP
+    WIFI_AUTH_WPA_PSK
+    WIFI_AUTH_WPA_WPA2_PSK
+    WIFI_AUTH_ENTERPRISE
+    WIFI_AUTH_WPA2_ENTERPRISE
+    WIFI_AUTH_WAPI_PSK
+    WIFI_AUTH_WPA3_ENT_192
+    WIFI_AUTH_MAX
+
+ */
 void setup_WiFi()
 {
   // ======== CUSTOMIZE WiFi HERE ========
   sprintf(SSID + (sizeof SSIDprefix) - 1, "%llX", MAC);
+  LOG("SSID:");LOGln(SSID);
   // generate a completely random password, if not already pulled from prefs
   if (WiFi_password[0] == 0) {
     for (int i = 0; i < WIFI_PASSWORD_LENGTH; i++) {
@@ -541,6 +588,7 @@ void setup_WiFi()
     }
     WiFi_password[(sizeof WiFi_password_alphabet)-1] =0;
   }
+  LOG("WiFi password:");LOGln(WiFi_password);
 
   // Set to station+AP mode and disconnect from an AP if it was previously connected.
   WiFi.mode(WIFI_AP_STA);
@@ -554,7 +602,6 @@ void setup_WiFi()
     return;
   }
   IPAddress myIP = WiFi.softAPIP();
-  LOG("SSID:");LOGln(SSID);
   LOG("AP IP address:");LOGln(myIP);
 #if 0
   server.begin();
@@ -562,16 +609,24 @@ void setup_WiFi()
 }
 void update_WiFi()
 {
-  //FIXME: convert to asynchronous
   // WiFi.scanNetworks will return the number of networks found.
-  int n = WiFi.scanNetworks();
-  //(bool async = false, bool show_hidden = false, bool passive = false, uint32_t max_ms_per_chan = 300, uint8_t channel = 0, const char * ssid=nullptr, const uint8_t * bssid=nullptr)
+  int n = WiFi.scanNetworks(/*async=*/true);
+  //(, bool show_hidden = false, bool passive = false, uint32_t max_ms_per_chan = 300, uint8_t channel = 0, const char * ssid=nullptr, const uint8_t * bssid=nullptr)
+  if (n == WIFI_SCAN_RUNNING || n == WIFI_SCAN_FAILED) return;
+
+  unsigned friends = 0;
+  int32_t max_signal, min_signal;
   for (int i = 0; i < n; ++i) {
     // look at SSID and RSSI for each network found
-    WiFi.SSID(i).c_str();
-    WiFi.BSSID(i);
-    WiFi.RSSI(i);
-    WiFi.channel(i);
+    const char* s = WiFi.SSID(i).c_str();
+    if (strstr(s, SSIDprefix) != s) continue;// not one of ours
+
+    friends++;
+    int32_t r = WiFi.RSSI(i);
+    if (friends == 1 || r > max_signal) max_signal = r;
+    if (friends == 1 || r < min_signal) min_signal = r;
+
+    //FIXME: do something with encryptionType; maybe disown OPEN/WEP/WPA ?
     switch (WiFi.encryptionType(i))
     {
     case WIFI_AUTH_OPEN:
@@ -605,6 +660,9 @@ void update_WiFi()
         Serial.print("unknown");
     }
   }
+  //FIXME: make result available to rest of program,
+  //       c.f. pushbutton_debounced, lightdark_smoothed
+
   // Delete the scan result to free memory for code below.
   WiFi.scanDelete();
 }
@@ -766,3 +824,4 @@ void update_epaper_display()
   display.powerOff();
   display.end();
 }
+
