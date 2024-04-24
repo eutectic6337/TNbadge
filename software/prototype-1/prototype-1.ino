@@ -528,7 +528,8 @@ WiFiServer server(80);
 void setup_WiFi()
 {
   // ======== CUSTOMIZE WiFi HERE ========
-  sprintf(SSID + (sizeof SSIDprefix) - 1, "%012llX", MAC);
+  sprintf(SSID + (sizeof SSIDprefix) - 1, "%llX", MAC);
+  // generate a completely random password
   for (int i = 0; i < WIFI_PASSWORD_LENGTH; i++) {
     WiFi_password[i] = WiFi_password_alphabet[random((sizeof WiFi_password_alphabet)-1)];
   }
