@@ -15,6 +15,10 @@
 //    maintained in update_FEATURE()
 //
 
+/* resources:
+  https://learn.adafruit.com/multi-tasking-the-arduino-part-1
+ */
+
 //syntactic sugar
 typedef const int GPIOpin;
 typedef const int Digital_Input;
