@@ -430,7 +430,30 @@ void setup_epaper_display() {
 
 // ======== on-chip radio: BLE and/or WiFi
 uint64_t MAC;
+//284050
+//284228
+#if 0
+#include "SimpleBLE.h"
+SimpleBLE ble;
+void setup_simpleBLE()
+{
+  ble.begin("ESP32 SimpleBLE");
+}
+void update_simpleBLE()
+{
+    String out = "BLE32 name: ";
+    out += String(millis() / 1000);
+    Serial.println(out);
+    ble.begin(out);
+}
+#endif
 
+//284228
+//1002926
+
+//284050
+//1002746
+#if 0 //approx 700k
 #include <BLEDevice.h>
 #include <BLEAdvertising.h>
 #include <BLEUtils.h>
@@ -441,32 +464,12 @@ uint64_t MAC;
 // https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Assigned_Numbers/out/en/Assigned_Numbers.pdf
 #define SERVICE_UUID        "6050bcfe-a8f8-4ad6-961d-5af97ac37e09"
 #define CHARACTERISTIC_UUID "cab5c6ff-31a7-4b2a-aada-4bae02ca1ca7"
-#if 0 //approx 500k
-#include "SimpleBLE.h"
-SimpleBLE ble;
-#endif
-
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <WiFiAP.h>
-#include <WiFiMulti.h>
-#define SSIDprefix "TNbadge"
-char SSID[(sizeof SSIDprefix)+(sizeof MAC)*2] = SSIDprefix;
-const char WiFi_password[] = "insert password here";
-#if 0 //approx 70k
-WiFiServer server(80);
-#endif
-
-void setup_radio() {
-  MAC = ESP.getEfuseMac();
-
+void setup_Bluetooth()
+{
   // ======== CUSTOMIZE Bluetooth HERE ========
   // IDEA: https://en.wikipedia.org/wiki/Bluetooth_Low_Energy_beacon
-#if 0 //approx 120k
-  ble.begin("ESP32 SimpleBLE");
-#endif
 
-#if 0 //approx 700k
+
   BLEDevice::init("Long name works now");
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
@@ -485,11 +488,57 @@ void setup_radio() {
   pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
+}
+void update_Bluetooth()
+{
+  // ======== CUSTOMIZE Bluetooth HERE ========
+}
+#else
+#define setup_Bluetooth() ((void)0)
+#define update_Bluetooth() ((void)0)
 #endif
 
+//284050
+//732912
+#if 0 //approx 450k
+#include <WiFi.h>
+const Time WIFI_STABILITY_ms = 100;
+const uint8_t WIFI_PASSWORD_LENGTH = 20;
+#define SSIDprefix "TNbadge"
+char SSID[(sizeof SSIDprefix)+(sizeof MAC)*2] = SSIDprefix;
+char WiFi_password[WIFI_PASSWORD_LENGTH+1] = {0};
+const char WiFi_password_alphabet[] =
+  "abcdefghijklmnoppqrstuvwxyz[];,./"
+  "ABCDEFGHIJKKLMNOPQRSTUVWXYZ{}:<>?"
+  "`1234567890-="
+  "~!@#$%^&*()_+"
+  "\\|'\"";
+
+#if 0
+WiFiServer server(80);
+#endif
+
+/* IDEA:
+   find out what friends are nearby through
+   - broadcasting our own SSID,
+   - scanning for SSIDs,
+   - filtering by known SSID prefix,
+   - sorting by RSSID
+ */
+void setup_WiFi()
+{
   // ======== CUSTOMIZE WiFi HERE ========
   sprintf(SSID + (sizeof SSIDprefix) - 1, "%012llX", MAC);
-#if 0 //approx 370k
+  for (int i = 0; i < WIFI_PASSWORD_LENGTH; i++) {
+    WiFi_password[i] = WiFi_password_alphabet[random((sizeof WiFi_password_alphabet)-1)];
+  }
+  WiFi_password[(sizeof WiFi_password_alphabet)-1] =0;
+
+  // Set to station+AP mode and disconnect from an AP if it was previously connected.
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.disconnect();
+  delay(WIFI_STABILITY_ms);
+
   // You can remove the password parameter if you want the AP to be open.
   // a valid password must have more than 7 characters
   if (!WiFi.softAP(SSID, WiFi_password)) {
@@ -499,72 +548,71 @@ void setup_radio() {
   IPAddress myIP = WiFi.softAPIP();
   LOG("SSID:");LOGln(SSID);
   LOG("AP IP address:");LOGln(myIP);
+#if 0
   server.begin();
 #endif
 }
-void update_simpleBLE(){
-#if 0
-    String out = "BLE32 name: ";
-    out += String(millis() / 1000);
-    Serial.println(out);
-    ble.begin(out);
+void update_WiFi()
+{
+  //FIXME: convert to asynchronous
+  // WiFi.scanNetworks will return the number of networks found.
+  int n = WiFi.scanNetworks();
+  //(bool async = false, bool show_hidden = false, bool passive = false, uint32_t max_ms_per_chan = 300, uint8_t channel = 0, const char * ssid=nullptr, const uint8_t * bssid=nullptr)
+  for (int i = 0; i < n; ++i) {
+    // look at SSID and RSSI for each network found
+    WiFi.SSID(i).c_str();
+    WiFi.BSSID(i);
+    WiFi.RSSI(i);
+    WiFi.channel(i);
+    switch (WiFi.encryptionType(i))
+    {
+    case WIFI_AUTH_OPEN:
+        Serial.print("open");
+        break;
+    case WIFI_AUTH_WEP:
+        Serial.print("WEP");
+        break;
+    case WIFI_AUTH_WPA_PSK:
+        Serial.print("WPA");
+        break;
+    case WIFI_AUTH_WPA2_PSK:
+        Serial.print("WPA2");
+        break;
+    case WIFI_AUTH_WPA_WPA2_PSK:
+        Serial.print("WPA+WPA2");
+        break;
+    case WIFI_AUTH_WPA2_ENTERPRISE:
+        Serial.print("WPA2-EAP");
+        break;
+    case WIFI_AUTH_WPA3_PSK:
+        Serial.print("WPA3");
+        break;
+    case WIFI_AUTH_WPA2_WPA3_PSK:
+        Serial.print("WPA2+WPA3");
+        break;
+    case WIFI_AUTH_WAPI_PSK:
+        Serial.print("WAPI");
+        break;
+    default:
+        Serial.print("unknown");
+    }
+  }
+  // Delete the scan result to free memory for code below.
+  WiFi.scanDelete();
+}
+#else
+#define setup_WiFi() ((void)0)
+#define update_WiFi() ((void)0)
 #endif
+
+void setup_radio() {
+  MAC = ESP.getEfuseMac();
+  setup_Bluetooth();
+  setup_WiFi();
 }
 void update_radio() {
-  // ======== CUSTOMIZE Bluetooth HERE ========
-
-  // ======== CUSTOMIZE WiFi HERE ========
-#if 0 //approx 15k
-  //FIXME: re-work to be non-blocking
-  WiFiClient client = server.available();   // listen for incoming clients
-
-  if (client) {                             // if you get a client,
-    LOGln("New Client.");           // print a message out the serial port
-    String currentLine = "";                // make a String to hold incoming data from the client
-    while (client.connected()) {            // loop while the client's connected
-      if (client.available()) {             // if there's bytes to read from the client,
-        char c = client.read();             // read a byte, then
-        Serial.write(c);                    // print it out the serial monitor
-        if (c == '\n') {                    // if the byte is a newline character
-
-          // if the current line is blank, you got two newline characters in a row.
-          // that's the end of the client HTTP request, so send a response:
-          if (currentLine.length() == 0) {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
-            client.println("HTTP/1.1 200 OK");
-            client.println("Content-type:text/html");
-            client.println();
-
-            // the content of the HTTP response follows the header:
-            client.print("Click <a href=\"/H\">here</a> to turn ON the LED.<br>");
-            client.print("Click <a href=\"/L\">here</a> to turn OFF the LED.<br>");
-
-            // The HTTP response ends with another blank line:
-            client.println();
-            // break out of the while loop:
-            break;
-          } else {    // if you got a newline, then clear currentLine:
-            currentLine = "";
-          }
-        } else if (c != '\r') {  // if you got anything else but a carriage return character,
-          currentLine += c;      // add it to the end of the currentLine
-        }
-
-        // Check to see if the client request was "GET /H" or "GET /L":
-        if (currentLine.endsWith("GET /H")) {
-          //digitalWrite(LED_BUILTIN, HIGH);               // GET /H turns the LED on
-        }
-        if (currentLine.endsWith("GET /L")) {
-          //digitalWrite(LED_BUILTIN, LOW);                // GET /L turns the LED off
-        }
-      }
-    }
-    // close the connection:
-    client.stop();
-    LOGln("Client Disconnected.");
-  }
-#endif
+  update_Bluetooth();
+  update_WiFi();
 }
 
 
