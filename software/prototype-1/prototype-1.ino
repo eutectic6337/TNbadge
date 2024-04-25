@@ -472,6 +472,8 @@ void update_simpleBLE()
 }
 #endif
 
+
+// IDEA: BLE uses so much flash it's probably not worth it
 //284228
 //1002926
 
@@ -536,6 +538,7 @@ const char WiFi_password_alphabet[] =
   "~!@#$%^&*()_+"
   "\\|'\"";
 
+// IDEA: probably no need to even connect to AP, let alone server 
 #if 0
 WiFiServer server(80);
 #endif
@@ -546,6 +549,20 @@ WiFiServer server(80);
    - scanning for SSIDs,
    - filtering by known SSID prefix,
    - sorting by RSSID
+ */
+
+/* IDEA:
+   use hardware crypto engine
+
+   #include "esp_secure_cert_crypto.h"
+   #include "esp_secure_cert_read.h"
+   #include "rom/aes.h"
+   #include "rom/digital_signature.h"
+   #include "rom/hmac.h"
+   #include "rom/sha.h"
+
+   (also in the SDK ...)
+   #include "sodium.h" //https://doc.libsodium.org/
  */
 
  /* possibly useful magic numbers for API
