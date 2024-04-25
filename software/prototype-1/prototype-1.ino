@@ -66,6 +66,7 @@ struct {
   Time next;
 } conf;
 #include "rom/rtc.h"
+#include "esp_random.h"
 void setup_prefs()
 {
   prefs.begin("badge", /*readonly=*/true);
@@ -75,6 +76,7 @@ void setup_prefs()
   prefs.getString("pw", conf.pw, WIFI_PASSWORD_LENGTH);
   prefs.end();
 
+  conf.seed += esp_random();
   randomSeed(conf.seed);
   uint32_t t = random(MINIMUM_s_TO_UPDATE_PREFS, MAXIMUM_s_TO_UPDATE_PREFS);
   conf.next = millis()/1000 + t;
