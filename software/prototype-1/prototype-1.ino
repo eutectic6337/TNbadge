@@ -15,6 +15,13 @@
 //    maintained in update_FEATURE()
 //
 
+/* remove leading // to enable; add // to disable feature */
+//#define ENABLE_EPAPER
+//#define ENABLE_SMARTLEDS
+//#define ENABLE_LED
+//#define ENABLE_BLUETOOTH
+//#define ENABLE_WIFI
+
 /* resources:
   https://learn.adafruit.com/multi-tasking-the-arduino-part-1
  */
@@ -225,8 +232,9 @@ void update_battery_monitor() {
 }
 
 
-// ======== blinky outputs - single LED
 Digital_Output level_shifter_OE = D7;
+#ifdef ENABLE_LED
+// ======== blinky outputs - single LED
 Digital_Output single_LED = D6;
 void setup_single_LED() {
   pinMode(single_LED, OUTPUT);
@@ -289,8 +297,13 @@ void update_single_LED() {
     break;
   }
 }
+#else
+#define setup_single_LED() ((void)0)
+#define update_single_LED() ((void)0)
+#endif
 
 
+#ifdef ENABLE_SMARTLEDS
 // ======== blinky outputs - city smartLEDs
 #include <SPI.h>
 //FIXME: add ESP32C3 hardware SPI support to FastLED
@@ -403,8 +416,13 @@ const LED_fade rainbow[] = {
 const LED_fade red_blue_sawtooth[] = {
   {1,.c=CRGB::Black}, {999,.c=CRGB::Red},
   {1,.c=CRGB::Black}, {999,.c=CRGB::Blue}, {0}};//cycle=2000
+#else
+#define setup_city_smartLEDs() ((void)0)
+#define update_city_smartLEDs() ((void)0)
+#endif
 
 
+#ifdef ENABLE_EPAPER
 // ======== epaper display (EPD)
 //FIXME: add ESP32C3 hardware SPI support to GxEPD2
 //#define USE_HSPI_FOR_EPD
@@ -450,13 +468,17 @@ void setup_epaper_display() {
   pinMode(level_shifter_OE, OUTPUT);
   digitalWrite(level_shifter_OE, HIGH);
 }
-
+#else
+#define setup_epaper_display() ((void)0)
+#endif
 
 // ======== on-chip radio: BLE and/or WiFi
 uint64_t MAC;
+
+
+#ifdef ENABLE_BLUETOOTH
 //284050
 //284228
-#if 0
 #include "SimpleBLE.h"
 SimpleBLE ble;
 void setup_simpleBLE()
@@ -470,16 +492,19 @@ void update_simpleBLE()
     Serial.println(out);
     ble.begin(out);
 }
+#else
+#define setup_simpleBLE() ((void)0)
+#define update_simpleBLE() ((void)0)
 #endif
 
 
+#ifdef ENABLE_BLUETOOTH
 // IDEA: BLE uses so much flash it's probably not worth it
 //284228
 //1002926
 
 //284050
 //1002746
-#if 0 //approx 700k
 #include <BLEDevice.h>
 #include <BLEAdvertising.h>
 #include <BLEUtils.h>
@@ -524,9 +549,10 @@ void update_Bluetooth()
 #define update_Bluetooth() ((void)0)
 #endif
 
+
+#ifdef ENABLE_WIFI
 //284050
 //732912
-#if 1 //approx 450k
 #include <WiFi.h>
 const Time WIFI_STABILITY_ms = 100;
 #define SSIDprefix "TNbadge"
@@ -696,10 +722,12 @@ void update_WiFi()
 
 void setup_radio() {
   MAC = ESP.getEfuseMac();
+  setup_simpleBLE();
   setup_Bluetooth();
   setup_WiFi();
 }
 void update_radio() {
+  update_simpleBLE();
   update_Bluetooth();
   update_WiFi();
 }
@@ -741,7 +769,7 @@ void loop() {
 }
 
 
-
+#ifdef ENABLE_SMARTLEDS
 //======== FIXME beyond here ========
 void fadeall() { for(int i = 0; i < NUM_SMART_LEDS; i++) { leds[i].nscale8(250); } }
 
@@ -774,7 +802,10 @@ void loop2() {
 		delay(10);
 	}
 }
+#endif
 
+
+#ifdef ENABLE_EPAPER
 // NOTE for use with Waveshare ESP32 Driver Board:
 // **** also need to select the constructor with the parameters for this board in GxEPD2_display_selection_new_style.h ****
 //
@@ -847,4 +878,7 @@ void update_epaper_display()
   display.powerOff();
   display.end();
 }
+#else
+#define update_epaper_display() ((void)0)
+#endif
 
