@@ -18,7 +18,7 @@
 /* remove leading // to enable; add // to disable feature */
 //#define ENABLE_EPAPER
 //#define ENABLE_SMARTLEDS
-//#define ENABLE_LED
+#define ENABLE_LED
 //#define ENABLE_BLUETOOTH
 //#define ENABLE_WIFI
 
@@ -141,6 +141,9 @@ void update_pushbutton() {
   static Time debounce_until;
   static unsigned prev = 0;
 
+  const Time LOG_DELAY_ms = 2000;
+  static Time log_delay;
+
   /* How It Works:
      after pushbutton has been in same position for at least `PUSHBUTTON_DEBOUNCE_ms`
      set `pushbutton_debounced` to that value
@@ -148,10 +151,11 @@ void update_pushbutton() {
   if (digitalRead(pushbutton) != prev) {
     prev = !prev;
     debounce_until = millis() + PUSHBUTTON_DEBOUNCE_ms;
+    log_delay = millis() + LOG_DELAY_ms;
   }
   else if (millis() >= debounce_until) {
     pushbutton_debounced = prev;
-    LOG("pushbutton:");LOGln(pushbutton_debounced? "HIGH": "LOW");
+    if (millis() >= log_delay) LOG("pushbutton:");LOGln(pushbutton_debounced? "HIGH": "LOW");
   }
 }
 
@@ -175,6 +179,9 @@ void update_lightdark_sensor() {
   static unsigned long sum = 0;
   static unsigned samples = 0;
 
+  const Time LOG_DELAY_ms = 1234;
+  static Time log_delay;
+
   /* How It Works:
      wait at least `LIGHTDARK_READING_ms`
      take a fresh reading (push the rest along, with the oldest falling off the end)
@@ -191,7 +198,7 @@ void update_lightdark_sensor() {
     raw[0] = analogRead(lightdark_sensor);
     sum += raw[0];
     lightdark_smoothed = sum/samples;
-    LOG("lightdark:");LOGln(lightdark_smoothed);
+    if (millis() >= log_delay) LOG("lightdark:");LOGln(lightdark_smoothed);
   }
 }
 
@@ -211,6 +218,9 @@ void update_battery_monitor() {
   static unsigned long sum = 0;
   static unsigned samples = 0;
 
+  const Time LOG_DELAY_ms = 3210;
+  static Time log_delay;
+
   /* How It Works:
      wait at least `BATTERY_READING_ms`
      take a fresh reading (push the rest along, with the oldest falling off the end)
@@ -227,7 +237,7 @@ void update_battery_monitor() {
     raw[0] = analogReadMilliVolts(half_battery_voltage);
     sum += raw[0];
     battery_millivolts = sum/samples *2;
-    LOG("battery:");LOG(battery_millivolts);LOGln("mV");
+    if (millis() >= log_delay) LOG("battery:");LOG(battery_millivolts);LOGln("mV");
   }
 }
 
@@ -335,6 +345,8 @@ struct {
 } city[NUM_SMART_LEDS];
 int any_LED_changed = 0;
 void update_city(int i) {
+  const Time LOG_DELAY_ms = 2000;
+  static Time log_delay;
   // ======== CUSTOMIZE HERE ========
 
   /* How It Works:
@@ -350,12 +362,12 @@ void update_city(int i) {
       /* set new transition for this city */
 
       switch (i) {
-      case LED_Memphis: LOGln("Memphis"); break;
-      case LED_Clarkesville: LOGln("Clarkesville"); break;
-      case LED_Nashville: LOGln("Nashville"); break;
-      case LED_Chattanooga: LOGln("Chattanooga"); break;
-      case LED_Knoxville: LOGln("Knoxville"); break;
-      default: LOGln("I have no idea");
+      case LED_Memphis: if (millis() >= log_delay) LOGln("Memphis"); break;
+      case LED_Clarkesville: if (millis() >= log_delay) LOGln("Clarkesville"); break;
+      case LED_Nashville: if (millis() >= log_delay) LOGln("Nashville"); break;
+      case LED_Chattanooga: if (millis() >= log_delay) LOGln("Chattanooga"); break;
+      case LED_Knoxville: if (millis() >= log_delay) LOGln("Knoxville"); break;
+      default: if (millis() >= log_delay) LOGln("I have no idea");
       }
     }
     city[i].step++;
