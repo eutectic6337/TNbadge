@@ -16,11 +16,11 @@
 //
 
 /* remove leading // to enable; add // to disable feature */
-//#define ENABLE_EPAPER
-//#define ENABLE_SMARTLEDS
+#define ENABLE_EPAPER
+#define ENABLE_SMARTLEDS
 #define ENABLE_LED
-//#define ENABLE_BLUETOOTH
-//#define ENABLE_WIFI
+#define ENABLE_BLUETOOTH
+#define ENABLE_WIFI
 
 /* resources:
   https://learn.adafruit.com/multi-tasking-the-arduino-part-1
@@ -155,7 +155,10 @@ void update_pushbutton() {
   }
   else if (millis() >= debounce_until) {
     pushbutton_debounced = prev;
-    if (millis() >= log_delay) LOG("pushbutton:");LOGln(pushbutton_debounced? "HIGH": "LOW");
+    if (millis() >= log_delay) {
+      LOG("pushbutton:");LOGln(pushbutton_debounced? "HIGH": "LOW");
+      log_delay = millis() + LOG_DELAY_ms;
+    }
   }
 }
 
@@ -198,7 +201,10 @@ void update_lightdark_sensor() {
     raw[0] = analogRead(lightdark_sensor);
     sum += raw[0];
     lightdark_smoothed = sum/samples;
-    if (millis() >= log_delay) LOG("lightdark:");LOGln(lightdark_smoothed);
+    if (millis() >= log_delay) {
+      LOG("lightdark:");LOGln(lightdark_smoothed);
+      log_delay = millis() + LOG_DELAY_ms;
+    }
   }
 }
 
@@ -237,7 +243,10 @@ void update_battery_monitor() {
     raw[0] = analogReadMilliVolts(half_battery_voltage);
     sum += raw[0];
     battery_millivolts = sum/samples *2;
-    if (millis() >= log_delay) LOG("battery:");LOG(battery_millivolts);LOGln("mV");
+    if (millis() >= log_delay) {
+      LOG("battery:");LOG(battery_millivolts);LOGln("mV");
+      log_delay = millis() + LOG_DELAY_ms;
+    }
   }
 }
 
@@ -362,12 +371,41 @@ void update_city(int i) {
       /* set new transition for this city */
 
       switch (i) {
-      case LED_Memphis: if (millis() >= log_delay) LOGln("Memphis"); break;
-      case LED_Clarkesville: if (millis() >= log_delay) LOGln("Clarkesville"); break;
-      case LED_Nashville: if (millis() >= log_delay) LOGln("Nashville"); break;
-      case LED_Chattanooga: if (millis() >= log_delay) LOGln("Chattanooga"); break;
-      case LED_Knoxville: if (millis() >= log_delay) LOGln("Knoxville"); break;
-      default: if (millis() >= log_delay) LOGln("I have no idea");
+      case LED_Memphis:
+        if (millis() >= log_delay) {
+          LOGln("Memphis");
+          log_delay = millis() + LOG_DELAY_ms;
+        }
+        break;
+      case LED_Clarkesville:
+        if (millis() >= log_delay) {
+          LOGln("Clarkesville");
+          log_delay = millis() + LOG_DELAY_ms;
+        }
+        break;
+      case LED_Nashville:
+        if (millis() >= log_delay) {
+          LOGln("Nashville");
+          log_delay = millis() + LOG_DELAY_ms;
+        }
+        break;
+      case LED_Chattanooga:
+        if (millis() >= log_delay) {
+          LOGln("Chattanooga");
+          log_delay = millis() + LOG_DELAY_ms;
+        }
+        break;
+      case LED_Knoxville:
+        if (millis() >= log_delay) {
+          LOGln("Knoxville");
+          log_delay = millis() + LOG_DELAY_ms;
+        }
+        break;
+      default:
+        if (millis() >= log_delay) {
+          LOGln("I have no idea");
+          log_delay = millis() + LOG_DELAY_ms;
+        }
       }
     }
     city[i].step++;
@@ -601,6 +639,15 @@ WiFiServer server(80);
 
    (also in the SDK ...)
    #include "sodium.h" //https://doc.libsodium.org/
+ */
+
+/* Arduino Cryptography Library by Rhys Weatherley
+   https://rweather.github.io/arduinolibs/
+   #include <RNG.h>
+   #include <AES.h>
+   #include <SHA256.h>
+   #include <SHA3.h>
+   #include <Ed25519.h>
  */
 
  /* possibly useful magic numbers for API
