@@ -910,6 +910,10 @@ void update_epaper_display()
   SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
   // FIXME
 
+// see https://www.reddit.com/r/arduino/comments/zllu7f/eink_weather_monitor/j06ckx6/
+// see https://github.com/flamerten/EinkWeatherMonitor#eink-screen
+// see https://github.com/MHEtLive/MH-ET-LIVE-E-Papers
+
 #if defined(ESP32) && defined(USE_HSPI_FOR_EPD)
   hspi.begin(13, 12, 14, 15); // remap hspi for EPD (swap pins)
   display.epd2.selectSPI(hspi, SPISettings(4000000, MSBFIRST, SPI_MODE0));
