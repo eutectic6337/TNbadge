@@ -2,7 +2,6 @@
 #define BADGE_PUSHBUTTON_H_
 
 // ======== human input - pushbutton
-Digital_Input pushbutton = D9;//(Vbutton)
 unsigned pushbutton_debounced = 1;
 void setup_pushbutton() {
   pinMode(pushbutton, INPUT);

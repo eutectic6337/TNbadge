@@ -2,7 +2,6 @@
 #define BADGE_BATTERY_H_
 
 // ======== environmental/status input - battery monitor
-Analog_Input half_battery_voltage = A2;//(Vmeasure)
 unsigned long battery_millivolts;
 void setup_battery_monitor() {
   pinMode(half_battery_voltage, INPUT);

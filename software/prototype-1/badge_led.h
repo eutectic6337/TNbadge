@@ -1,10 +1,8 @@
 #ifndef BADGE_LED_H_
 #define BADGE_LED_H_
 
-Digital_Output level_shifter_OE = D7;
 #ifdef ENABLE_LED
 // ======== blinky outputs - single LED
-Digital_Output single_LED = D6;
 void setup_single_LED() {
   pinMode(single_LED, OUTPUT);
 }

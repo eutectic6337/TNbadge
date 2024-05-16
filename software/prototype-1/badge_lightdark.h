@@ -2,7 +2,6 @@
 #define BADGE_LIGHTDARK_H_
 
 // ======== environmental/status input - lightdark sensor
-Analog_Input lightdark_sensor = A3;//(Vdark)
 unsigned lightdark_smoothed;
 void setup_lightdark_sensor() {
   pinMode(lightdark_sensor, INPUT);

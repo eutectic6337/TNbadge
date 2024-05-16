@@ -3,11 +3,7 @@
 
 // ======== Shitty Add-On v1.69bis (https://hackaday.com/2019/03/20/introducing-the-shitty-add-on-v1-69bis-standard/)
 #include <Wire.h> // I2C
-//
-GPIOpin SAO_GPIO1 = D1;
-GPIOpin SAO_GPIO2 = D0;
-GPIOpin SAO_SDA = SDA;
-GPIOpin SAO_SCL = SCL;
+
 void setup_SAOs()
 {
   // ======== CUSTOMIZE HERE ========old

@@ -7,9 +7,7 @@
 //FIXME: add ESP32C3 hardware SPI support to FastLED
 #define FASTLED_USE_GLOBAL_BRIGHTNESS 1
 #include <FastLED.h>
-//
-Digital_Output smart_LED_data = MOSI;
-Digital_Output smart_LED_clock = SCK;
+
 
 enum LED_city_index {
   LED_Memphis, LED_Clarkesville, LED_Nashville, LED_Chattanooga, LED_Knoxville,

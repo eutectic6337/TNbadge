@@ -29,6 +29,7 @@
 // define to enable progress logging to serial port
 #define DO_LOG
 #include "badge.h"
+#include "badge_pins.h"
 
 // functions on board:
 #include "badge_radio.h"

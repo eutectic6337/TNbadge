@@ -10,17 +10,7 @@
 // Note: if you use this with ENABLE_GxEPD2_GFX 1:
 //       uncomment it in GxEPD2_GFX.h too, or add #include <GFX.h> before any #include <GxEPD2_GFX.h>
 #include <GxEPD2_3C.h>
-//
-/* Note: I/O pins are shared with other hardware, but
-        EPD is powered only when other hardware is unpowered
-        thanks to slide-switch SW3
- */
-Digital_Output EPD_SDI = MOSI;
-Digital_Output EPD_SCLK = SCK;
-Digital_Output EPD_cs = D3;//(shared with Vdark)
-Digital_Output EPD_data_cmd = D1;//(shared with SAO GPIO1)
-Digital_Output EPD_Reset = D6;//(shared with single LED)
-Digital_Input EPD_Busy = D0;//(shared with SAO GPIO2)
+
 void update_epaper_display();
 void setup_epaper_display() {
   /* After customizing your epaper display and downloading updated firmware,
