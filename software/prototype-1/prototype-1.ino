@@ -19,7 +19,7 @@
 #define ENABLE_EPAPER
 #define ENABLE_SMARTLEDS
 #define ENABLE_LED
-#define ENABLE_BLUETOOTH
+//#define ENABLE_BLUETOOTH
 #define ENABLE_WIFI
 
 /* resources:
