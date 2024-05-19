@@ -26,8 +26,8 @@
   https://learn.adafruit.com/multi-tasking-the-arduino-part-1
  */
 
-// define to enable progress logging to serial port
-#define DO_LOG
+// define to disable progress logging to serial port
+//#define NDEBUG
 #include "badge.h"
 #include "badge_pins.h"
 

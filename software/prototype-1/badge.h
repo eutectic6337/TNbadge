@@ -10,7 +10,7 @@ typedef const int Digital_Output;
 typedef unsigned long Time;
 
 
-#ifdef DO_LOG
+#ifndef NDEBUG
 #define LOG Serial.print
 #define LOGln Serial.println
 #else
