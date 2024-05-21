@@ -23,6 +23,23 @@ void setup_city_smartLEDs() {
 	FastLED.setBrightness(100);
   FastLED.setMaxPowerInMilliWatts(500);
 }
+struct transition {
+  value target;
+  time ms;
+};
+struct sequence {
+  unsigned short slow_down;
+  unsigned short speed_up;
+  struct transition[] tx;
+}
+struct step {
+  time next;
+  signed delta;
+  time delta_t;
+  time started;
+  struct sequence* tx;
+};
+
 struct {
   Time wait_until;
   CRGB new_LED;
@@ -39,6 +56,45 @@ void update_city(int i) {
      a Finite State Machine for each LED has *n* states
      each fade state waits for each step in its respective processes
    */
+Brightness 
+Colour 
+
+
+  if (millis() > s.next) {
+    v += s.delta; // and MAKE IT SO
+    s.next += s.delta_t;
+  }
+  if (millis() > s.started + s.tx->ms) {
+    s.started = millis();
+    struct transition* n = s.tx->next;
+    if (!n) { ?? }
+    if (!n->ms) { ?? }
+    signed d = n->target - v;
+    if (d == 0) {
+      s.delta = 0;
+      s.delta_t = n->ms;
+    }
+    else {
+      value abs_d = abs(d);
+      if (abs_d < n->ms) {
+        if (d < 0) {
+          s.delta = -1;
+        }
+        else if (d > 0) {
+          s.delta = 1;
+        }
+        s.delta_t = n->ms / abs_d;
+      }
+      else {
+        s.delta_t = 1;
+        s.delta = d / n->ms;
+      }
+    }
+    s.tx = n;
+    s.next = s.started + s.delta;
+  }
+
+
 
   if (millis() >= city[i].wait_until) {
     any_LED_changed = 1;
