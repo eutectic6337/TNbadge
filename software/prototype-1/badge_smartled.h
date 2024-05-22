@@ -23,41 +23,115 @@ void setup_city_smartLEDs() {
 	FastLED.setBrightness(100);
   FastLED.setMaxPowerInMilliWatts(500);
 }
-struct transition {
-  value target;
-  time ms;
-};
-struct sequence {
-  unsigned short slow_down;
-  unsigned short speed_up;
-  struct transition[] tx;
-}
-struct step {
-  time next;
-  signed delta;
-  time delta_t;
-  time started;
-  struct sequence* tx;
-};
 
-struct {
-  Time wait_until;
-  CRGB new_LED;
-  Time time_step;
-  fract8 step;
+/*
+each LED has nominal colour and brightness
+colour and brightness each follow loops
+
+loop is array of sequences which restarts after the last executes
+sequence is array of transitions, speed-adjusted
+transition is (linear) ramp of steps from current to target over time
+(for color transition, use separate steps for R,G,B)
+
+loop (and components therof) would probably be best implemented using templates,
+but I'm insufficiently comfortable with that C++ feature yet, so I'll use
+copy-paste for now
+*/
+struct color_transition {
+  Time ms;
+  CRGB target;
+};
+struct color_sequence {
+  unsigned slow_down;
+  unsigned speed_up;
+  struct color_transition* tx;
+  unsigned n;
+}
+struct color_step {
+  Time next;
+  signed delta;
+  Time delta_t;
+  Time started;
+  struct color_sequence* tx;
+};
+struct color_loop {
+  unsigned slow_down;
+  unsigned speed_up;
+  struct color_sequence* s[];
+}
+
+struct brightness_transition {
+  Time ms;
+  fract8 target;// 0== off, -1== full on
+};
+struct brightness_sequence {
+  unsigned slow_down;
+  unsigned speed_up;
+  struct brightness_transition* tx;
+  unsigned n;
+}
+struct brightness_step {
+  Time next;
+  signed delta;
+  Time delta_t;
+  Time started;
+  struct brightness_sequence* tx;
+};
+struct brightness_loop {
+  unsigned slow_down;
+  unsigned speed_up;
+  struct brightness_sequence* s[];
+}
+
+const struct brightness_transition flash_99pc[] = {
+  {0,-1}, {990,-1},
+  {0,0}, {10,0}}; //cycle=1000
+const struct brightness_transition flash_90pc[] = {
+  {0,-1}, {900,-1},
+  {0,0}, {100,0}}; //cycle=1000
+const struct brightness_transition flash_50pc[] = {
+  {0,-1}, {500,-1},
+  {0,0}, {500,0}}; //cycle=1000
+const struct brightness_transition flash_10pc[] = {
+  {0,-1}, {100,-1},
+  {0,0}, {900,0}}; //cycle=1000
+const struct brightness_transition flash_1pc[] = {
+  {0,-1}, 10,-1},
+  {0,0}, {990,0}}; //cycle=1000
+const struct brightness_transition double_strobe[] = {
+  {0,-1}, {10,-1},
+  {0,0}, {10,0},
+  {0,-1}, {10,-1},
+  {0,0}, {970,0}}; //cycle=1000
+const struct brightness_transition sawtooth[] = {
+  {0,0}, {1000,-1}};//cycle=1000
+const struct brightness_transition reverse_sawtooth[] = {
+  {0,-1}, {1000,0}};//cycle=1000
+
+const struct color_transition rainbow[] = {
+  {100,.c=CRGB::Red},
+  {100,.c=CRGB::Orange},
+  {100,.c=CRGB::Yellow},
+  {100,.c=CRGB::Green},
+  {100,.c=CRGB::Blue},
+  {100,.c=CRGB::Violet}};//cycle=600
+
+
+struct LED_state {
+  struct color_loop cloop;
+  CRGB color;
+  struct color_step Rstep, Gstep, Bstep;
+
+  struct brightness_loop bloop;
+  unsigned brightness;
+  struct brightness_step bstep;
 } city[NUM_SMART_LEDS];
+
 int any_LED_changed = 0;
 void update_city(int i) {
   const Time LOG_DELAY_ms = 2000;
   static Time log_delay;
   // ======== CUSTOMIZE HERE ========
-
-  /* How It Works:
-     a Finite State Machine for each LED has *n* states
-     each fade state waits for each step in its respective processes
-   */
-Brightness 
-Colour 
 
 
   if (millis() > s.next) {
@@ -154,51 +228,6 @@ void update_city_smartLEDs() {
   }
 }
 
-/*
-each LED starts at time 0, value 0,0,0
-a fade goes from old[r,g,b] to new[r,g,b] over time t
-
-*/
-struct LED_fade { // from current to target over time
-  unsigned time; // units might be seconds, milliseconds, ...
-  union {
-    CRGB c;
-    struct LED_fade* other;
-  };
-};
-
-struct LED_state {
-  unsigned ticks_to_next_change;
-};
-
-// examples // when step[n].time==0, no more steps
-const LED_fade white_90pc_flash[] = {
-  {1,.c=CRGB::White}, {99,.c=CRGB::White},
-  {1,.c=CRGB::Black}, {9,.c=CRGB::Black}, {0}}; //cycle=100
-const LED_fade white_50pc_flash[] = {
-  {1,.c=CRGB::White}, {99,.c=CRGB::White},
-  {1,.c=CRGB::Black}, {99,.c=CRGB::Black}, {0}}; //cycle=200
-const LED_fade white_10pc_flash[] = {
-  {1,.c=CRGB::White}, {99,.c=CRGB::White},
-  {1,.c=CRGB::Black}, {899,.c=CRGB::Black}, {0}}; //cycle=1000
-const LED_fade white_1pc_flash[] = {
-  {1,.c=CRGB::White}, {99,.c=CRGB::White},
-  {1,.c=CRGB::Black}, {9899,.c=CRGB::Black}, {0}}; //cycle=10000
-const LED_fade white_double_strobe[] = {
-  {1,.c=CRGB::White}, {99,.c=CRGB::White},
-  {1,.c=CRGB::Black}, {99,.c=CRGB::Black},
-  {1,.c=CRGB::White}, {99,.c=CRGB::White},
-  {1,.c=CRGB::Black}, {9699,.c=CRGB::Black}, {0}}; //cycle=10000
-const LED_fade rainbow[] = {
-  {100,.c=CRGB::Red},
-  {100,.c=CRGB::Orange},
-  {100,.c=CRGB::Yellow},
-  {100,.c=CRGB::Green},
-  {100,.c=CRGB::Blue},
-  {100,.c=CRGB::Violet}, {0}};//cycle=600
-const LED_fade red_blue_sawtooth[] = {
-  {1,.c=CRGB::Black}, {999,.c=CRGB::Red},
-  {1,.c=CRGB::Black}, {999,.c=CRGB::Blue}, {0}};//cycle=2000
 #else
 #define setup_city_smartLEDs() ((void)0)
 #define update_city_smartLEDs() ((void)0)
