@@ -328,54 +328,42 @@ void update_city(int i) {
     city[i].Bstep.next = city[i].Bstep.started + city[i].Bstep.delta;
   }
 
-
-
-    city[i].wait_until = millis() + city[i].time_step;
-    leds[i] = leds[i].lerp8(city[i].new_LED, city[i].step);
-
-
-    if (city[i].step == 255) {
-      /* set new transition for this city */
-
-      switch (i) {
-      case LED_Memphis:
-        if (millis() >= log_delay) {
-          LOGln("Memphis");
-          log_delay = millis() + LOG_DELAY_ms;
-        }
-        break;
-      case LED_Clarkesville:
-        if (millis() >= log_delay) {
-          LOGln("Clarkesville");
-          log_delay = millis() + LOG_DELAY_ms;
-        }
-        break;
-      case LED_Nashville:
-        if (millis() >= log_delay) {
-          LOGln("Nashville");
-          log_delay = millis() + LOG_DELAY_ms;
-        }
-        break;
-      case LED_Chattanooga:
-        if (millis() >= log_delay) {
-          LOGln("Chattanooga");
-          log_delay = millis() + LOG_DELAY_ms;
-        }
-        break;
-      case LED_Knoxville:
-        if (millis() >= log_delay) {
-          LOGln("Knoxville");
-          log_delay = millis() + LOG_DELAY_ms;
-        }
-        break;
-      default:
-        if (millis() >= log_delay) {
-          LOGln("I have no idea");
-          log_delay = millis() + LOG_DELAY_ms;
-        }
+  switch (i) {
+    case LED_Memphis:
+      if (millis() >= log_delay) {
+        LOGln("Memphis");
+        log_delay = millis() + LOG_DELAY_ms;
       }
-    }
-    city[i].step++;
+      break;
+    case LED_Clarkesville:
+      if (millis() >= log_delay) {
+        LOGln("Clarkesville");
+        log_delay = millis() + LOG_DELAY_ms;
+      }
+      break;
+    case LED_Nashville:
+      if (millis() >= log_delay) {
+        LOGln("Nashville");
+        log_delay = millis() + LOG_DELAY_ms;
+      }
+      break;
+    case LED_Chattanooga:
+      if (millis() >= log_delay) {
+        LOGln("Chattanooga");
+        log_delay = millis() + LOG_DELAY_ms;
+      }
+      break;
+    case LED_Knoxville:
+      if (millis() >= log_delay) {
+        LOGln("Knoxville");
+        log_delay = millis() + LOG_DELAY_ms;
+      }
+      break;
+    default:
+      if (millis() >= log_delay) {
+        LOGln("I have no idea");
+        log_delay = millis() + LOG_DELAY_ms;
+      }
   }
 }
 void update_city_smartLEDs() {
@@ -391,41 +379,6 @@ void update_city_smartLEDs() {
 #else
 #define setup_city_smartLEDs() ((void)0)
 #define update_city_smartLEDs() ((void)0)
-#endif
-
-#ifdef ENABLE_SMARTLEDS
-//======== FIXME beyond here ========
-void fadeall() { for(int i = 0; i < NUM_SMART_LEDS; i++) { leds[i].nscale8(250); } }
-
-void loop2() { 
-	static uint8_t hue = 0;
-	Serial.print("x");
-	// First slide the led in one direction
-	for(int i = 0; i < NUM_SMART_LEDS; i++) {
-		// Set the i'th led to red 
-		leds[i] = CHSV(hue++, 255, 255);
-		// Show the leds
-		// now that we've shown the leds, reset the i'th led to black
-		// leds[i] = CRGB::Black;
-		fadeall();
-		// Wait a little bit before we loop around and do it again
-		delay(10);
-	}
-	Serial.print("x");
-
-	// Now go in the other direction.  
-	for(int i = (NUM_SMART_LEDS)-1; i >= 0; i--) {
-		// Set the i'th led to red 
-		leds[i] = CHSV(hue++, 255, 255);
-		// Show the leds
-		FastLED.show();
-		// now that we've shown the leds, reset the i'th led to black
-		// leds[i] = CRGB::Black;
-		fadeall();
-		// Wait a little bit before we loop around and do it again
-		delay(10);
-	}
-}
 #endif
 
 #endif//BADGE_SMARTLED_H_
