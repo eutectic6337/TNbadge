@@ -1,3 +1,4 @@
+#include "controller.h"
 #ifndef BADGE_SMARTLED_H_
 #define BADGE_SMARTLED_H_
 
@@ -42,15 +43,15 @@ struct color_transition {
   CRGB target;
 };
 struct color_sequence {
+  struct color_transition* tx;//array of n transitions
+  unsigned n;
   unsigned slow_down;
   unsigned speed_up;
-  struct color_transition* tx;
-  unsigned n;
 }
 struct color_loop {
+  struct color_sequence* s[];//s[i]==0 => last sequence in loop
   unsigned slow_down;
   unsigned speed_up;
-  struct color_sequence* s[];
 }
 struct color_step {
   Time next;
@@ -67,15 +68,15 @@ struct brightness_transition {
   fract8 target;// 0== off, -1== full on
 };
 struct brightness_sequence {
+  struct brightness_transition* tx;//array of n transitions
+  unsigned n;
   unsigned slow_down;
   unsigned speed_up;
-  struct brightness_transition* tx;
-  unsigned n;
 }
 struct brightness_loop {
+  struct brightness_sequence* s[];//s[i]==0 => last sequence in loop
   unsigned slow_down;
   unsigned speed_up;
-  struct brightness_sequence* s[];
 }
 struct brightness_step {
   Time next;
@@ -122,13 +123,11 @@ const struct color_transition rainbow[] = {
 
 
 struct LED_state {
-  struct color_loop cloop;
   CRGB color;
   struct color_step Rstep;
   struct color_step Gstep;
   struct color_step Bstep;
 
-  struct brightness_loop bloop;
   unsigned brightness;
   struct brightness_step bright_step;
 } city[NUM_SMART_LEDS];
@@ -148,12 +147,23 @@ void update_city(int i) {
     city[i].bright_step.next += city[i].bright_step.delta_t;
   }
   if (now > city[i].bright_step.started + city[i].bright_step.tx->ms) {
+    struct brightness_loop* l = city[i].bright_step.loop;
+    struct brightness_sequence* s = city[i].bright_step.seq;
+    struct brightness_transition* n = city[i].bright_step.tx + 1;
+    if (n >= s.tx + n) {// at end of sequence
+      s++;
+      if (*s == 0) {// at end of loop
+        s = l->s[0];
+      }
+      n = s->t[0];
+    }
     city[i].bright_step.started = now;
-    struct brightness_transition* n = city[i].bright_step.tx->next;
-    if (!n) { ?? }
-    if (!n->ms) { ?? }
-    signed d = n->target - v;
-    if (d == 0) {
+    signed d = n->target - city[i].brightness;
+    if (n->ms == 0) {
+      city[i].bright_step.delta = d;
+      city[i].bright_step.delta_t = 0;
+    }
+    else if (d == 0) {
       city[i].bright_step.delta = 0;
       city[i].bright_step.delta_t = n->ms;
     }
@@ -184,12 +194,23 @@ void update_city(int i) {
     city[i].Rstep.next += city[i].Rstep.delta_t;
   }
   if (now > city[i].Rstep.started + city[i].Rstep.tx->ms) {
+    struct color_loop* l = city[i].Rstep.loop;
+    struct color_sequence* s = city[i].Rstep.seq;
+    struct color_transition* n = city[i].Rstep.tx + 1;
+    if (n >= s.tx + n) {// at end of sequence
+      s++;
+      if (*s == 0) {// at end of loop
+        s = l->s[0];
+      }
+      n = s->t[0];
+    }
     city[i].Rstep.started = now;
-    struct brightness_transition* n = city[i].Rstep.tx->next;
-    if (!n) { ?? }
-    if (!n->ms) { ?? }
-    signed d = n->target - v;
-    if (d == 0) {
+    signed d = n->target - city[i].color.red;
+    if (n->ms == 0) {
+      city[i].Rstep.delta = d;
+      city[i].Rstep.delta_t = 0;
+    }
+    else if (d == 0) {
       city[i].Rstep.delta = 0;
       city[i].Rstep.delta_t = n->ms;
     }
@@ -220,12 +241,23 @@ void update_city(int i) {
     city[i].Gstep.next += city[i].Gstep.delta_t;
   }
   if (now > city[i].Gstep.started + city[i].Gstep.tx->ms) {
+    struct color_loop* l = city[i].Gstep.loop;
+    struct color_sequence* s = city[i].Gstep.seq;
+    struct color_transition* n = city[i].Gstep.tx + 1;
+    if (n >= s.tx + n) {// at end of sequence
+      s++;
+      if (*s == 0) {// at end of loop
+        s = l->s[0];
+      }
+      n = s->t[0];
+    }
     city[i].Gstep.started = now;
-    struct brightness_transition* n = city[i].Gstep.tx->next;
-    if (!n) { ?? }
-    if (!n->ms) { ?? }
-    signed d = n->target - v;
-    if (d == 0) {
+    signed d = n->target - city[i].color.green;
+    if (n->ms == 0) {
+      city[i].Gstep.delta = d;
+      city[i].Gstep.delta_t = 0;
+    }
+    else if (d == 0) {
       city[i].Gstep.delta = 0;
       city[i].Gstep.delta_t = n->ms;
     }
@@ -256,12 +288,23 @@ void update_city(int i) {
     city[i].Bstep.next += city[i].Bstep.delta_t;
   }
   if (now > city[i].Bstep.started + city[i].Bstep.tx->ms) {
+    struct color_loop* l = city[i].Bstep.loop;
+    struct color_sequence* s = city[i].Bstep.seq;
+    struct color_transition* n = city[i].Bstep.tx + 1;
+    if (n >= s.tx + n) {// at end of sequence
+      s++;
+      if (*s == 0) {// at end of loop
+        s = l->s[0];
+      }
+      n = s->t[0];
+    }
     city[i].Bstep.started = now;
-    struct brightness_transition* n = city[i].Bstep.tx->next;
-    if (!n) { ?? }
-    if (!n->ms) { ?? }
-    signed d = n->target - v;
-    if (d == 0) {
+    signed d = n->target - city[i].color.blue;
+    if (n->ms == 0) {
+      city[i].Bstep.delta = d;
+      city[i].Bstep.delta_t = 0;
+    }
+    else if (d == 0) {
       city[i].Bstep.delta = 0;
       city[i].Bstep.delta_t = n->ms;
     }
