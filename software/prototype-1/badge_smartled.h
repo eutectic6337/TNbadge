@@ -15,15 +15,6 @@ enum LED_city_index {
   NUM_SMART_LEDS
 };
 CRGB leds[NUM_SMART_LEDS];
-void setup_city_smartLEDs() {
-  pinMode(smart_LED_data, OUTPUT);
-  pinMode(smart_LED_clock, OUTPUT);
-  SPI.begin();
-  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
-  FastLED.addLeds<APA102, smart_LED_data, smart_LED_clock, BGR>(leds, NUM_SMART_LEDS);  // BGR ordering is typical
-	FastLED.setBrightness(100);
-  FastLED.setMaxPowerInMilliWatts(500);
-}
 
 /*
 each LED has nominal colour and brightness
@@ -122,6 +113,7 @@ const struct color_transition rainbow[] = {
   {100,.c=CRGB::Violet}};//cycle=600
 
 
+
 struct LED_state {
   CRGB color;
   struct color_step Rstep;
@@ -131,6 +123,16 @@ struct LED_state {
   unsigned brightness;
   struct brightness_step bright_step;
 } city[NUM_SMART_LEDS];
+
+void setup_city_smartLEDs() {
+  pinMode(smart_LED_data, OUTPUT);
+  pinMode(smart_LED_clock, OUTPUT);
+  SPI.begin();
+  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
+  FastLED.addLeds<APA102, smart_LED_data, smart_LED_clock, BGR>(leds, NUM_SMART_LEDS);  // BGR ordering is typical
+	FastLED.setBrightness(100);
+  FastLED.setMaxPowerInMilliWatts(500);
+}
 
 int any_LED_changed = 0;
 void update_city(int i) {
@@ -143,7 +145,7 @@ void update_city(int i) {
   //Brightness
   if (now >= city[i].bright_step.next) {
     any_LED_changed = 1;
-    city[i].brightness += city[i].bright_step.delta; // and MAKE IT SO
+    city[i].brightness += city[i].bright_step.delta;
     city[i].bright_step.next += city[i].bright_step.delta_t;
   }
   if (now > city[i].bright_step.started + city[i].bright_step.tx->ms) {
@@ -190,7 +192,7 @@ void update_city(int i) {
   //Red
   if (now >= city[i].Rstep.next) {
     any_LED_changed = 1;
-    city[i].color += CRGB(city[i].Rstep.delta, 0, 0); // and MAKE IT SO
+    city[i].color += CRGB(city[i].Rstep.delta, 0, 0);
     city[i].Rstep.next += city[i].Rstep.delta_t;
   }
   if (now > city[i].Rstep.started + city[i].Rstep.tx->ms) {
@@ -237,7 +239,7 @@ void update_city(int i) {
   //Green
   if (now >= city[i].Gstep.next) {
     any_LED_changed = 1;
-    city[i].color += CRGB(0, city[i].Gstep.delta, 0); // and MAKE IT SO
+    city[i].color += CRGB(0, city[i].Gstep.delta, 0);
     city[i].Gstep.next += city[i].Gstep.delta_t;
   }
   if (now > city[i].Gstep.started + city[i].Gstep.tx->ms) {
@@ -284,7 +286,7 @@ void update_city(int i) {
   //Blue
   if (now >= city[i].Bstep.next) {
     any_LED_changed = 1;
-    city[i].color += CRGB(0, 0, city[i].Bstep.delta); // and MAKE IT SO
+    city[i].color += CRGB(0, 0, city[i].Bstep.delta);
     city[i].Bstep.next += city[i].Bstep.delta_t;
   }
   if (now > city[i].Bstep.started + city[i].Bstep.tx->ms) {
@@ -327,6 +329,9 @@ void update_city(int i) {
     city[i].Bstep.tx = n;
     city[i].Bstep.next = city[i].Bstep.started + city[i].Bstep.delta;
   }
+
+  //MAKE IT SO
+  led[i] = city[i].color.nscale8(city[i].brightness);
 
   switch (i) {
     case LED_Memphis:
