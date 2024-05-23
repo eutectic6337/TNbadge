@@ -92,7 +92,7 @@ const struct brightness_transition flash_10pc[] = {
   {0,-1}, {100,-1},
   {0,0}, {900,0}}; //cycle=1000
 const struct brightness_transition flash_1pc[] = {
-  {0,-1}, 10,-1},
+  {0,-1}, {10,-1},
   {0,0}, {990,0}}; //cycle=1000
 const struct brightness_transition double_strobe[] = {
   {0,-1}, {10,-1},
@@ -113,6 +113,14 @@ const struct color_transition rainbow[] = {
   {100,.c=CRGB::Violet}};//cycle=600
 
 
+const struct color_sequence rs = {
+  rainbow, sizeof rainbow,
+  1,1
+};
+const struct color_loop rl = {
+  {&rs, 0},
+  1,1
+};
 
 struct LED_state {
   CRGB color;
@@ -185,6 +193,11 @@ void update_city(int i) {
         city[i].bright_step.delta = d / n->ms;
       }
     }
+    if (s->slow_down) { city[i].bright_step.delta_t *= s->slow_down; }
+    if (l->slow_down) { city[i].bright_step.delta_t *= l->slow_down; }
+    if (s->speed_up) { city[i].bright_step.delta_t /= s->speed_up; }
+    if (l->speed_up) { city[i].bright_step.delta_t /= l->speed_up; }
+
     city[i].bright_step.tx = n;
     city[i].bright_step.next = city[i].bright_step.started + city[i].bright_step.delta;
   }
@@ -232,6 +245,11 @@ void update_city(int i) {
         city[i].Rstep.delta = d / n->ms;
       }
     }
+    if (s->slow_down) { city[i].Rstep.delta_t *= s->slow_down; }
+    if (l->slow_down) { city[i].Rstep.delta_t *= l->slow_down; }
+    if (s->speed_up) { city[i].Rstep.delta_t /= s->speed_up; }
+    if (l->speed_up) { city[i].Rstep.delta_t /= l->speed_up; }
+
     city[i].Rstep.tx = n;
     city[i].Rstep.next = city[i].Rstep.started + city[i].Rstep.delta;
   }
@@ -279,6 +297,11 @@ void update_city(int i) {
         city[i].Gstep.delta = d / n->ms;
       }
     }
+    if (s->slow_down) { city[i].Gstep.delta_t *= s->slow_down; }
+    if (l->slow_down) { city[i].Gstep.delta_t *= l->slow_down; }
+    if (s->speed_up) { city[i].Gstep.delta_t /= s->speed_up; }
+    if (l->speed_up) { city[i].Gstep.delta_t /= l->speed_up; }
+
     city[i].Gstep.tx = n;
     city[i].Gstep.next = city[i].Gstep.started + city[i].Gstep.delta;
   }
@@ -326,6 +349,11 @@ void update_city(int i) {
         city[i].Bstep.delta = d / n->ms;
       }
     }
+    if (s->slow_down) { city[i].Bstep.delta_t *= s->slow_down; }
+    if (l->slow_down) { city[i].Bstep.delta_t *= l->slow_down; }
+    if (s->speed_up) { city[i].Bstep.delta_t /= s->speed_up; }
+    if (l->speed_up) { city[i].Bstep.delta_t /= l->speed_up; }
+
     city[i].Bstep.tx = n;
     city[i].Bstep.next = city[i].Bstep.started + city[i].Bstep.delta;
   }
