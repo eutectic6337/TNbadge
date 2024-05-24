@@ -105,13 +105,14 @@ const struct brightness_transition reverse_sawtooth[] = {
   {0,-1}, {1000,0}};//cycle=1000
 
 const struct color_transition rainbow[] = {
-  {100,.c=CRGB::Red},
-  {100,.c=CRGB::Orange},
-  {100,.c=CRGB::Yellow},
-  {100,.c=CRGB::Green},
-  {100,.c=CRGB::Blue},
-  {100,.c=CRGB::Violet}};//cycle=600
+  {100,CRGB::Red},
+  {100,CRGB::Orange},
+  {100,CRGB::Yellow},
+  {100,CRGB::Green},
+  {100,CRGB::Blue},
+  {100,CRGB::Violet}};//cycle=600
 
+#include "00-smartled_patterns.h"
 
 const struct color_sequence rs = {
   rainbow, sizeof rainbow,
