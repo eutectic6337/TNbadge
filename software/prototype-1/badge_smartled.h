@@ -18,109 +18,83 @@ CRGB leds[NUM_SMART_LEDS];
 
 /*
 each LED has nominal colour and brightness
-colour and brightness each follow loops
+colour and brightness each follow sequences
 
-loop is array of sequences which restarts after the last executes
 sequence is array of transitions, speed-adjusted
 transition is (linear) ramp of steps from current to target over time
 (for color transition, use separate steps for R,G,B)
 
-loop (and components therof) would probably be best implemented using templates,
+probably be best implemented using templates,
 but I'm insufficiently comfortable with that C++ feature yet, so I'll use
 copy-paste for now
 */
-struct color_transition {
-  Time ms;
-  CRGB target;
-};
-struct color_sequence {
-  struct color_transition* tx;//array of n transitions
-  unsigned n;
-  unsigned slow_down;
-  unsigned speed_up;
+
+struct brightness_transition {int ms;int value};
+struct color_transition {int ms;CRGB value};
+
+#define CITY_BRIGHT(n,s,v) \
+const double brightness_sequence_speed_##n s;\
+const struct brightness_transition brightness_tx_##n [] = v;
+#define CITY_BRIGHT_INIT(n) {brightness_sequence_speed_##n,brightness_tx_##n}
+
+#define CITY_COLOR(n,s,v) \
+const double color_sequence_speed_##n s;\
+const struct color_transition color_tx_##n [] = v;
+#define CITY_COLOR_INIT(n) {color_sequence_speed_##n,color_tx_##n}
+
+#define SQUARE_(a,b,r,t) {0,(a)},{(r)*(t)/100,(a)},{0,(b)},{((100-(r))*(t)/100,(b)}
+#define SQUARE(a,b,t) SQUARE_(a,b,50,t)
+
+#define TRIANGLE_(a,b,r,t) {(r)*(t)/100,(a)},{((100-(r))*(t)/100,(b)}
+#define TRIANGLE(a,b,t) TRIANGLE_(a,b,50,t)
+
+#define SAWTOOTH(a,b,t) TRIANGLE_(a,b,100,t)
+#define REVERSE_SAWTOOTH(a,b,t) TRIANGLE_(a,b,0,t)
+
+#define RAINBOW(t) \
+  {(t)/6,CRGB::Red},\
+  {(t)/6,CRGB::Orange},\
+  {(t)/6,CRGB::Yellow},\
+  {(t)/6,CRGB::Green},\
+  {(t)/6,CRGB::Blue},\
+  {(t)/6,CRGB::Violet}}
+
+#include "00-smartled_patterns.h"
+
+const struct brightness_sequence {
+  double speed;
+  struct brightness_transition tx[];
+} city_brightness[] = {
+  CITY_BRIGHT_INIT(Memphis),
+  CITY_BRIGHT_INIT(Clarkesville),
+  CITY_BRIGHT_INIT(Nashville),
+  CITY_BRIGHT_INIT(Chattanooga),
+  CITY_BRIGHT_INIT(Knoxville)
 }
-struct color_loop {
-  struct color_sequence* s[];//s[i]==0 => last sequence in loop
-  unsigned slow_down;
-  unsigned speed_up;
+const struct color_sequence {
+  double speed;
+  struct color_transition tx[];
+} city_color[] = {
+  CITY_COLOR_INIT(Memphis),
+  CITY_COLOR_INIT(Clarkesville),
+  CITY_COLOR_INIT(Nashville),
+  CITY_COLOR_INIT(Chattanooga),
+  CITY_COLOR_INIT(Knoxville)
 }
+
 struct color_step {
   Time next;
   signed delta;
   Time delta_t;
   Time started;
-  struct color_transition* tx;
   struct color_sequence* seq;
-  struct color_loop* loop;
 };
-
-struct brightness_transition {
-  Time ms;
-  fract8 target;// 0== off, -1== full on
-};
-struct brightness_sequence {
-  struct brightness_transition* tx;//array of n transitions
-  unsigned n;
-  unsigned slow_down;
-  unsigned speed_up;
-}
-struct brightness_loop {
-  struct brightness_sequence* s[];//s[i]==0 => last sequence in loop
-  unsigned slow_down;
-  unsigned speed_up;
-}
 struct brightness_step {
   Time next;
   signed delta;
   Time delta_t;
   Time started;
-  struct brightness_transition* tx;
   struct brightness_sequence* seq;
-  struct brightness_loop* loop;
-};
-
-const struct brightness_transition flash_99pc[] = {
-  {0,-1}, {990,-1},
-  {0,0}, {10,0}}; //cycle=1000
-const struct brightness_transition flash_90pc[] = {
-  {0,-1}, {900,-1},
-  {0,0}, {100,0}}; //cycle=1000
-const struct brightness_transition flash_50pc[] = {
-  {0,-1}, {500,-1},
-  {0,0}, {500,0}}; //cycle=1000
-const struct brightness_transition flash_10pc[] = {
-  {0,-1}, {100,-1},
-  {0,0}, {900,0}}; //cycle=1000
-const struct brightness_transition flash_1pc[] = {
-  {0,-1}, {10,-1},
-  {0,0}, {990,0}}; //cycle=1000
-const struct brightness_transition double_strobe[] = {
-  {0,-1}, {10,-1},
-  {0,0}, {10,0},
-  {0,-1}, {10,-1},
-  {0,0}, {970,0}}; //cycle=1000
-const struct brightness_transition sawtooth[] = {
-  {0,0}, {1000,-1}};//cycle=1000
-const struct brightness_transition reverse_sawtooth[] = {
-  {0,-1}, {1000,0}};//cycle=1000
-
-const struct color_transition rainbow[] = {
-  {100,CRGB::Red},
-  {100,CRGB::Orange},
-  {100,CRGB::Yellow},
-  {100,CRGB::Green},
-  {100,CRGB::Blue},
-  {100,CRGB::Violet}};//cycle=600
-
-#include "00-smartled_patterns.h"
-
-const struct color_sequence rs = {
-  rainbow, sizeof rainbow,
-  1,1
-};
-const struct color_loop rl = {
-  {&rs, 0},
-  1,1
 };
 
 struct LED_state {
@@ -150,6 +124,18 @@ void update_city(int i) {
   // ======== CUSTOMIZE HERE ========
 
   Time now = millis();
+
+struct brightness_step {
+  Time next;
+  signed delta;
+  Time delta_t;
+  Time started;
+  struct brightness_sequence* seq;
+};
+const struct brightness_sequence {
+  double speed;
+  struct {int ms;int value} s[];
+} city_brightness[];
 
   //Brightness
   if (now >= city[i].bright_step.next) {
@@ -203,6 +189,10 @@ void update_city(int i) {
     city[i].bright_step.next = city[i].bright_step.started + city[i].bright_step.delta;
   }
 
+const struct color_sequence {
+  double speed;
+  struct {int ms;CRGB value} s[];
+} city_color[];
   //Red
   if (now >= city[i].Rstep.next) {
     any_LED_changed = 1;

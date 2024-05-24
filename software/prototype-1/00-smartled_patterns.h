@@ -1,62 +1,36 @@
-#ifdef ENABLE_SMARTLEDS
+// Each of the badge's 5 cities must have a CITY_BRIGHT() and a CITY_COLOR() invocation:
+//   CITY_BRIGHT(cityname,
+//               brightness-speed-factor,
+//               {comma-separated-sequence-of-brightness-transitions}
+//               );
+//   CITY_COLOR(cityname,
+//              color-speed-factor,
+//              {comma-separated-sequence-of-color-transitions}
+//             );
 
-#define SQUARE_(a,b,r,t) {0,(a)},{(r)*(t)/100,(a)},{0,(b)},{((100-(r))*(t)/100,(b)}
-#define SQUARE(a,b,t) SQUARE_(a,b,50,t)
+// Each brightness transition is
+//    { milliseconds-to-completion, target-brightness-percentage }
 
-#define TRIANGLE_(a,b,r,t) {(r)*(t)/100,(a)},{((100-(r))*(t)/100,(b)}
-#define TRIANGLE(a,b,t) TRIANGLE_(a,b,50,t)
+// Each color transition is
+//    { milliseconds-to-completion, target-color }
+// (color names matching those in the HTML spec are provided as CRGB::colorname)
 
-#define SAWTOOTH(a,b,t) TRIANGLE_(a,b,100,t)
-#define REVERSE_SAWTOOTH(a,b,t) TRIANGLE_(a,b,0,t)
+// The speed factor determines the speed at which the sequence of transitions runs
+// versus its explicit timings
 
-const struct brightness_sequence {
-  double speed;
-  struct {int ms;int value} s[];
-} city_brightness[] = {
-/* Memphis */ {1.1,{
-  TRIANGLE(10,80,1000)
-}},
-/* Clarkesville */ {1.0,{
-  TRIANGLE(10,90,1000)
-}},
-/* Nashville */ {1.2,{
-  TRIANGLE(10,100,1000)
-}},
-/* Chattanooga */ {1.1,{
-  TRIANGLE(10,90,1000)
-}},
-/* Knoxville */ {1.0,{
-  TRIANGLE(10,80,1000)
-}}
-}
+// Some helper macros are provided to simplify defining common brightness waveforms
+//    SQUARE(), TRIANGLE(), SAWTOOTH()
+// and color sequences
+//    RAINBOW()
 
-#define RAINBOW(t) \
-  {(t)/6,CRGB::Red},\
-  {(t)/6,CRGB::Orange},\
-  {(t)/6,CRGB::Yellow},\
-  {(t)/6,CRGB::Green},\
-  {(t)/6,CRGB::Blue},\
-  {(t)/6,CRGB::Violet}}
+CITY_BRIGHT(Memphis,1.1,{TRIANGLE(10,80,1000), TRIANGLE(10,80,800), SAWTOOTH(10,80,600)});
+CITY_BRIGHT(Clarkesville,1.0,{TRIANGLE(5,90,1000), TRIANGLE(5,85,900)});
+CITY_BRIGHT(Nashville,1.2,{TRIANGLE(0,100,1000), SQUARE(0,100,100), SQUARE(0,100,100)});
+CITY_BRIGHT(Chattanooga,1.1,{TRIANGLE(5,90,1000), TRIANGLE(5,90,600), TRIANGLE(5,90,200)});
+CITY_BRIGHT(Knoxville,1.0,{TRIANGLE(10,80,700), TRIANGLE(10,85,1000)});
 
-const struct color_sequence {
-  double speed;
-  struct {int ms;CRGB value} s[];
-} city_brightness[] = {
-/* Memphis */ {1.1,{
-  RAINBOW(3000)
-}},
-/* Clarkesville */ {1.0,{
-  RAINBOW(3000)
-}},
-/* Nashville */ {1.2,{
-  RAINBOW(3000)
-}},
-/* Chattanooga */ {1.1,{
-  RAINBOW(3000)
-}},
-/* Knoxville */ {1.0,{
-  RAINBOW(3000)
-}}
-}
-
-#endif
+CITY_COLOR(Memphis,1.2,{RAINBOW(3000), {1000,CRGB::Orange});
+CITY_COLOR(Clarkesville,1.1,{RAINBOW(3000), {900,CRGB:Yellow});
+CITY_COLOR(Nashville,1.0,{RAINBOW(3300), {800,CRGB::Green});
+CITY_COLOR(Chattanooga,1.0,{RAINBOW(3000), {700,CRGB::Blue});
+CITY_COLOR(Knoxville,1.1,{RAINBOW(3000), {600,CRGB::Violet});
