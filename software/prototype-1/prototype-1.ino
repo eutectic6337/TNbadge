@@ -17,10 +17,12 @@
 
 /* remove leading // to enable; add // to disable feature */
 //#define ENABLE_EPAPER
-#define ENABLE_SMARTLEDS
-//#define ENABLE_LED
+//#define ENABLE_SMARTLEDS
+#define ENABLE_LED
 //#define ENABLE_BLUETOOTH
 //#define ENABLE_WIFI
+#define ENABLE_BATTERYMONITOR
+#define ENABLE_LIGHTDARK
 
 /* resources:
   https://learn.adafruit.com/multi-tasking-the-arduino-part-1

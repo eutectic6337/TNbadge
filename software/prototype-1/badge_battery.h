@@ -3,6 +3,7 @@
 
 // ======== environmental/status input - battery monitor
 unsigned long battery_millivolts;
+#ifdef ENABLE_BATTERYMONITOR
 void setup_battery_monitor() {
   pinMode(half_battery_voltage, INPUT);
 }
@@ -40,5 +41,9 @@ void update_battery_monitor() {
     }
   }
 }
+#else
+#define setup_battery_monitor() ((void)0)
+#define update_battery_monitor() ((void)0)
+#endif
 
 #endif//BADGE_BATTERY_H_

@@ -3,6 +3,7 @@
 
 // ======== environmental/status input - lightdark sensor
 unsigned lightdark_smoothed;
+#ifdef ENABLE_LIGHTDARK
 void setup_lightdark_sensor() {
   pinMode(lightdark_sensor, INPUT);
 }
@@ -40,5 +41,9 @@ void update_lightdark_sensor() {
     }
   }
 }
+#else
+#define setup_lightdark_sensor() ((void)0)
+#define update_lightdark_sensor() ((void)0)
+#endif
 
 #endif//BADGE_LIGHTDARK_H_
