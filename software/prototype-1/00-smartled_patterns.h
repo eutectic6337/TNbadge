@@ -35,12 +35,12 @@ const double brightness_sequence_speed_Knoxville=1.0;
 struct brightness_transition brightness_tx_Knoxville [] = {TRIANGLE(10,80,700), TRIANGLE(10,85,1000)};
 
 const double color_sequence_speed_Memphis=1.2;
-struct color_transition color_tx_Memphis [] = {};//{RAINBOW(3000), {1000,CRGB::Orange}};
+struct color_transition color_tx_Memphis [] = {RAINBOW(3000), {1000,CRGB::Orange}};
 const double color_sequence_speed_Clarkesville=1.1;
-struct color_transition color_tx_Clarkesville [] = {};//{RAINBOW(3000), {900,CRGB:Yellow}};
+struct color_transition color_tx_Clarkesville [] = {RAINBOW(3000), {900,CRGB::Yellow}};
 const double color_sequence_speed_Nashville=1.0;
-struct color_transition color_tx_Nashville [] = {};//{RAINBOW(3300), {800,CRGB::Green}};
+struct color_transition color_tx_Nashville [] = {RAINBOW(3300), {800,CRGB::Green}};
 const double color_sequence_speed_Chattanooga=1.0;
-struct color_transition color_tx_Chattanooga [] = {};//{RAINBOW(3000), {700,CRGB::Blue}};
+struct color_transition color_tx_Chattanooga [] = {RAINBOW(3000), {700,CRGB::Blue}};
 const double color_sequence_speed_Knoxville=1.1;
-struct color_transition color_tx_Knoxville [] = {};//{RAINBOW(3000), {600,CRGB::Violet}};
+struct color_transition color_tx_Knoxville [] = {RAINBOW(3000), {600,CRGB::Violet}};

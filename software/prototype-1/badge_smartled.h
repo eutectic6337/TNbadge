@@ -57,7 +57,7 @@ const struct color_transition color_tx_##n [] = v;
   {(t)/6,CRGB::Yellow},\
   {(t)/6,CRGB::Green},\
   {(t)/6,CRGB::Blue},\
-  {(t)/6,CRGB::Violet}}
+  {(t)/6,CRGB::Violet}
 
 #include "00-smartled_patterns.h"
 
@@ -185,7 +185,7 @@ void update_city(int i) {
       t = s->tx;
     }
     city[i].Rstep.started = now;
-    int d = t->target - city[i].color.red;
+    int d = t->target.red - city[i].color.red;
     if (t->ms == 0) {
       city[i].Rstep.delta = d;
       city[i].Rstep.delta_t = 0;
@@ -229,7 +229,7 @@ void update_city(int i) {
       t = s->tx;
     }
     city[i].Gstep.started = now;
-    int d = t->target - city[i].color.green;
+    int d = t->target.green - city[i].color.green;
     if (t->ms == 0) {
       city[i].Gstep.delta = d;
       city[i].Gstep.delta_t = 0;
@@ -273,7 +273,7 @@ void update_city(int i) {
       t = s->tx;
     }
     city[i].Bstep.started = now;
-    int d = t->target - city[i].color.blue;
+    int d = t->target.blue - city[i].color.blue;
     if (t->ms == 0) {
       city[i].Bstep.delta = d;
       city[i].Bstep.delta_t = 0;
