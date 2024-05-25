@@ -20,9 +20,9 @@
 //#define ENABLE_SMARTLEDS
 #define ENABLE_LED
 //#define ENABLE_BLUETOOTH
-//#define ENABLE_WIFI
+//#d//efine ENABLE_WIFI
 #define ENABLE_BATTERYMONITOR
-#define ENABLE_LIGHTDARK
+//#define ENABLE_LIGHTDARK
 
 /* resources:
   https://learn.adafruit.com/multi-tasking-the-arduino-part-1
