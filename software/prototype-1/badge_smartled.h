@@ -1,12 +1,11 @@
-#include "controller.h"
 #ifndef BADGE_SMARTLED_H_
 #define BADGE_SMARTLED_H_
 
 #ifdef ENABLE_SMARTLEDS
 // ======== blinky outputs - city smartLEDs
-#include <SPI.h>
+//#include <SPI.h>
 //FIXME: add ESP32C3 hardware SPI support to FastLED
-#define FASTLED_USE_GLOBAL_BRIGHTNESS 1
+//#define FASTLED_USE_GLOBAL_BRIGHTNESS 1
 #include <FastLED.h>
 
 
@@ -29,8 +28,8 @@ but I'm insufficiently comfortable with that C++ feature yet, so I'll use
 copy-paste for now
 */
 
-struct brightness_transition {int ms;int value};
-struct color_transition {int ms;CRGB value};
+struct brightness_transition {int ms;int target;};
+struct color_transition {int ms;CRGB target;};
 
 #define NELEM(a) ((sizeof (a))/((sizeof (a)[0])))
 #define CITY_BRIGHT(n,s,v) \
@@ -43,10 +42,10 @@ const double color_sequence_speed_##n s;\
 const struct color_transition color_tx_##n [] = v;
 #define CITY_COLOR_INIT(n) {color_sequence_speed_##n,color_tx_##n,NELEM(color_tx_##n)}
 
-#define SQUARE_(a,b,r,t) {0,(a)},{(r)*(t)/100,(a)},{0,(b)},{((100-(r))*(t)/100,(b)}
+#define SQUARE_(a,b,r,t) {0,(a)},{(r)*(t)/100,(a)},{0,(b)},{(100-(r))*(t)/100,(b)}
 #define SQUARE(a,b,t) SQUARE_(a,b,50,t)
 
-#define TRIANGLE_(a,b,r,t) {(r)*(t)/100,(a)},{((100-(r))*(t)/100,(b)}
+#define TRIANGLE_(a,b,r,t) {(r)*(t)/100,(a)},{(100-(r))*(t)/100,(b)}
 #define TRIANGLE(a,b,t) TRIANGLE_(a,b,50,t)
 
 #define SAWTOOTH(a,b,t) TRIANGLE_(a,b,100,t)
@@ -62,28 +61,31 @@ const struct color_transition color_tx_##n [] = v;
 
 #include "00-smartled_patterns.h"
 
-const struct brightness_sequence {
+struct brightness_sequence {
   double speed;
   struct brightness_transition* tx;
   int n;
-} city_brightness[] = {
+};
+struct color_sequence {
+  double speed;
+  struct color_transition* tx;
+  int n;
+};
+
+struct brightness_sequence city_brightness[] = {
   CITY_BRIGHT_INIT(Memphis),
   CITY_BRIGHT_INIT(Clarkesville),
   CITY_BRIGHT_INIT(Nashville),
   CITY_BRIGHT_INIT(Chattanooga),
   CITY_BRIGHT_INIT(Knoxville)
-}
-const struct color_sequence {
-  double speed;
-  struct color_transition* tx;
-  int n;
-} city_color[] = {
+};
+struct color_sequence city_color[] = {
   CITY_COLOR_INIT(Memphis),
   CITY_COLOR_INIT(Clarkesville),
   CITY_COLOR_INIT(Nashville),
   CITY_COLOR_INIT(Chattanooga),
   CITY_COLOR_INIT(Knoxville)
-}
+};
 
 struct color_step {
   Time next;
@@ -115,11 +117,11 @@ struct LED_state {
 void setup_city_smartLEDs() {
   pinMode(smart_LED_data, OUTPUT);
   pinMode(smart_LED_clock, OUTPUT);
-  SPI.begin();
-  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
+//  SPI.begin();
+//  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
   FastLED.addLeds<APA102, smart_LED_data, smart_LED_clock, BGR>(leds, NUM_SMART_LEDS);  // BGR ordering is typical
-	FastLED.setBrightness(100);
-  FastLED.setMaxPowerInMilliWatts(500);
+//	FastLED.setBrightness(100);
+//  FastLED.setMaxPowerInMilliWatts(500);
 }
 
 int any_LED_changed = 0;
@@ -136,7 +138,7 @@ void update_city(int i) {
     city[i].brightness += city[i].bright_step.delta;
     city[i].bright_step.next += city[i].bright_step.delta_t;
   }
-  if (now > city[i].bright_step.started + city[i].bright_step.tx->ms) {
+  if (now > city[i].bright_step.started + city[i].bright_step.tx->ms) { 
     struct brightness_sequence* s = city[i].bright_step.seq;
     struct brightness_transition* t = city[i].bright_step.tx + 1;
     if (t >= s->tx + s->n) {// at end of sequence
@@ -145,10 +147,6 @@ void update_city(int i) {
     city[i].bright_step.started = now;
     int d = t->target - city[i].brightness;
     if (t->ms == 0) {
-      city[i].bright_step.delta = d;
-      city[i].bright_step.delta_t = 0;
-    }
-    else if (d == 0) {
       city[i].bright_step.delta = 0;
       city[i].bright_step.delta_t = t->ms;
     }
@@ -174,21 +172,6 @@ void update_city(int i) {
     city[i].bright_step.next = city[i].bright_step.started + city[i].bright_step.delta;
   }
 
-struct brightness_transition {int ms;int value};
-const struct brightness_sequence {
-  double speed;
-  struct brightness_transition* tx;
-  int n;
-} city_brightness[];
-struct brightness_step {
-  Time next;
-  int delta;
-  Time delta_t;
-  Time started;
-  struct brightness_transition* tx;
-  struct brightness_sequence* seq;
-};
-
   //Red
   if (now >= city[i].Rstep.next) {
     any_LED_changed = 1;
@@ -198,7 +181,7 @@ struct brightness_step {
   if (now > city[i].Rstep.started + city[i].Rstep.tx->ms) {
     struct color_sequence* s = city[i].Rstep.seq;
     struct color_transition* t = city[i].Rstep.tx + 1;
-    if (t >= s.tx + s->n) {// at end of sequence
+    if (t >= s->tx + s->n) {// at end of sequence
       t = s->tx;
     }
     city[i].Rstep.started = now;
@@ -242,7 +225,7 @@ struct brightness_step {
   if (now > city[i].Gstep.started + city[i].Gstep.tx->ms) {
     struct color_sequence* s = city[i].Gstep.seq;
     struct color_transition* t = city[i].Gstep.tx + 1;
-    if (t >= s.tx + s->n) {// at end of sequence
+    if (t >= s->tx + s->n) {// at end of sequence
       t = s->tx;
     }
     city[i].Gstep.started = now;
@@ -286,7 +269,7 @@ struct brightness_step {
   if (now > city[i].Bstep.started + city[i].Bstep.tx->ms) {
     struct color_sequence* s = city[i].Bstep.seq;
     struct color_transition* t = city[i].Bstep.tx + 1;
-    if (t >= s.tx + s->n) {// at end of sequence
+    if (t >= s->tx + s->n) {// at end of sequence
       t = s->tx;
     }
     city[i].Bstep.started = now;
@@ -322,7 +305,7 @@ struct brightness_step {
   }
 
   //MAKE IT SO
-  led[i] = city[i].color.nscale8(city[i].brightness*256/100);
+  leds[i] = city[i].color.nscale8(city[i].brightness*256/100);
 
   switch (i) {
     case LED_Memphis:

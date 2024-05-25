@@ -23,14 +23,24 @@
 // and color sequences
 //    RAINBOW()
 
-CITY_BRIGHT(Memphis,1.1,{TRIANGLE(10,80,1000), TRIANGLE(10,80,800), SAWTOOTH(10,80,600)});
-CITY_BRIGHT(Clarkesville,1.0,{TRIANGLE(5,90,1000), TRIANGLE(5,85,900)});
-CITY_BRIGHT(Nashville,1.2,{TRIANGLE(0,100,1000), SQUARE(0,100,100), SQUARE(0,100,100)});
-CITY_BRIGHT(Chattanooga,1.1,{TRIANGLE(5,90,1000), TRIANGLE(5,90,600), TRIANGLE(5,90,200)});
-CITY_BRIGHT(Knoxville,1.0,{TRIANGLE(10,80,700), TRIANGLE(10,85,1000)});
+const double brightness_sequence_speed_Memphis=1.1;
+struct brightness_transition brightness_tx_Memphis [] = {TRIANGLE(10,80,1000), TRIANGLE(10,80,800), SAWTOOTH(10,80,600)};
+const double brightness_sequence_speed_Clarkesville=1.0;
+struct brightness_transition brightness_tx_Clarkesville [] = {TRIANGLE(5,90,1000), TRIANGLE(5,85,900)};
+const double brightness_sequence_speed_Nashville=1.2;
+struct brightness_transition brightness_tx_Nashville [] = {TRIANGLE(0,100,1000), SQUARE(0,100,100), SQUARE(0,100,100)};
+const double brightness_sequence_speed_Chattanooga=1.1;
+struct brightness_transition brightness_tx_Chattanooga [] = {TRIANGLE(5,90,1000), TRIANGLE(5,90,600), TRIANGLE(5,90,200)};
+const double brightness_sequence_speed_Knoxville=1.0;
+struct brightness_transition brightness_tx_Knoxville [] = {TRIANGLE(10,80,700), TRIANGLE(10,85,1000)};
 
-CITY_COLOR(Memphis,1.2,{RAINBOW(3000), {1000,CRGB::Orange});
-CITY_COLOR(Clarkesville,1.1,{RAINBOW(3000), {900,CRGB:Yellow});
-CITY_COLOR(Nashville,1.0,{RAINBOW(3300), {800,CRGB::Green});
-CITY_COLOR(Chattanooga,1.0,{RAINBOW(3000), {700,CRGB::Blue});
-CITY_COLOR(Knoxville,1.1,{RAINBOW(3000), {600,CRGB::Violet});
+const double color_sequence_speed_Memphis=1.2;
+struct color_transition color_tx_Memphis [] = {};//{RAINBOW(3000), {1000,CRGB::Orange}};
+const double color_sequence_speed_Clarkesville=1.1;
+struct color_transition color_tx_Clarkesville [] = {};//{RAINBOW(3000), {900,CRGB:Yellow}};
+const double color_sequence_speed_Nashville=1.0;
+struct color_transition color_tx_Nashville [] = {};//{RAINBOW(3300), {800,CRGB::Green}};
+const double color_sequence_speed_Chattanooga=1.0;
+struct color_transition color_tx_Chattanooga [] = {};//{RAINBOW(3000), {700,CRGB::Blue}};
+const double color_sequence_speed_Knoxville=1.1;
+struct color_transition color_tx_Knoxville [] = {};//{RAINBOW(3000), {600,CRGB::Violet}};
