@@ -7,15 +7,16 @@
 - imported into [EasyEDA Pro](https://pro.easyeda.com)
 
    - manually reattached lanyard/stencil-alignment holes, battery box slots, an zero-size holes to net GND
+ with direct connect (i.e. no thermal relief)
 
    - manually reattached quarter-circle track around pin 2 of epaper display connector, top left,
 to net /GPIO1{SLASH}DC
 
-   - manually re-edited APA102 footpring to remove solder mask/stencil openings over (center) duplicate GND/5V pads
+   - manually re-edited APA102 footprint to remove solder mask/stencil openings over (center) duplicate GND/5V pads
 
    - manually edited all testpoints to show correct designator, on back silkscreen layer
 
-   - manually imported QR code PNG (L0) onto back silkscreen layer (Kicad plays poorly)
+   - manually imported QR code PNG (M1) onto back silkscreen layer (Kicad plays poorly)
 
    - manually adjusted color of silkscreen artifacts
 
@@ -215,5 +216,6 @@ until solder flows to create concave surface
 - apply hot air at 200+ degC to holes under CPU carrier board
 until solder flows to create concave surface
 ![reflowed solder in holes](i/17-underCPUreflow.png)
+
 
 
