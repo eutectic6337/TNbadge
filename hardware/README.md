@@ -87,6 +87,9 @@ indicates a likely solder bridge
 indicates a bridge between pads of one of the smart LEDs either side of the
 involved TP5...TP14
 
+Data point: after soldering only the front components (5x smart LED, 2x resistor) on 5 boards,
+I had *1* board with no erroneous beeps in the continuity test.
+
 ### rectify
 
 For each identified fault
@@ -104,6 +107,15 @@ For each identified fault
 - add minimal solder if needed
 
 - re-test to verify fault is gone
+
+Mr Clumsyhands has found a trap for young players:
+once you've played some hot air over a SMD LED,
+its little transparent top becomes soft enough for your tweezers to wipe it off,
+along with the actual silicon bits underneath, if you twitch while applying pressure to the side of the package.
+
+*Photo goes here*
+
+So, don't do that.
 
 ## back surface mount
 

@@ -27,7 +27,8 @@ on-chip SPI, /CS from pin 4 (D3/GPIO5), DATA/CMD from pin 2 (D1/GPIO3), /RESET f
 
 ### human-accessible input
 - 1 of LDR, darkness-proportional voltage at ADC  
-to pin 3 (A3/D3/GPIO5) *unfortunately, the chip configuration in Espressif's Arduino chip-support package connects a non-functional ADC to this pin, so this can't work without a deeper dive* :(
+to pin 3 (A3/D3/GPIO5)  
+*unfortunately, the chip configuration in Espressif's Arduino chip-support package connects a non-functional ADC to this pin, so this can't work without a deeper dive* :(
 
 - 1 of [pushbutton](https://www.aliexpress.us/item/2251832616067755.html)
 digital input to pin 10 (D9/GPIO9)
