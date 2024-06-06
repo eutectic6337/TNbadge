@@ -16,7 +16,7 @@
 //
 
 /* remove leading // to enable; add // to disable feature */
-//#define ENABLE_EPAPER
+#define ENABLE_EPAPER
 //#define ENABLE_SMARTLEDS
 #define ENABLE_LED
 //#define ENABLE_BLUETOOTH
