@@ -27,7 +27,7 @@ on-chip SPI, /CS from pin 4 (D3/GPIO5), DATA/CMD from pin 2 (D1/GPIO3), /RESET f
 
 ### human-accessible input
 - 1 of LDR, darkness-proportional voltage at ADC  
-to pin 3 (A3/D3/GPIO5)
+to pin 3 (A3/D3/GPIO5) *unfortunately, the chip configuration in Espressif's Arduino chip-support package connects a non-functional ADC to this pin, so this can't work without a deeper dive* :(
 
 - 1 of [pushbutton](https://www.aliexpress.us/item/2251832616067755.html)
 digital input to pin 10 (D9/GPIO9)
@@ -81,19 +81,19 @@ possible behaviour-change triggers:
 - external access over BLE/WiFi by not-a-badge
 
 # production timeline
-Board design is now fairly locked down.
+Board design is now locked down.
 
 - First batch of badge kits
 (SMD components soldered onto PCB, through-hole assembly to be completed by user)
 distributed in April 2024 to software development volunteers
 
-- Artwork to be added to board silkscreen
+- Artwork has been added to board silkscreen
 
-- epaper displays to be ordered early May
+- epaper displays are now in hand
 
-- PCBs to be ordered mid May
+- remaining PCBs to be delivered mid June
 
-- CPU modules to be ordered early June
+- remaining CPU modules to be ordered mid June
 
 - SMD assembly to start when PCBs arrive
 
