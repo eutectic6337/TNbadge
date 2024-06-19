@@ -45,13 +45,13 @@ to net /GPIO1{SLASH}DC
 
 - stencil solder paste on front
 
-- [place](i/00-100k-b.jpg) 2x 100k resistor (2010)
-![100k surface mount resistors](i/00-100k-a.jpg)
+- [place](i/00-100k-b.jpg) [2x 100k resistor](i/00-100k-a.jpg) (2010)
+![100k location](i/00-100k-location.jpg)
 
-- [place](i/03-APA102-b.jpg) 5x APA102 addressable RGB LED (2020)
+- [place](i/03-APA102-b.jpg) 5x [APA102 addressable RGB LED](i/03-APA102-a.jpg) (2020)
 ![APA102 datasheet](i/01-APA102.png)
 ![APA102 footprint](i/02-APA102.png)
-![APA102 from above](i/03-APA102-a.jpg)
+![APA102 location](i/03-APA102-location.jpg)
 
 - (optional) preheat to 100 degC
 
@@ -113,7 +113,7 @@ once you've played some hot air over a SMD LED,
 its little transparent top becomes soft enough for your tweezers to wipe it off,
 along with the actual silicon bits underneath, if you twitch while applying pressure to the side of the package.
 
-*Photo goes here*
+![APA102 scraped](i/03-APA102-scraped.png)
 
 So, don't do that.
 
