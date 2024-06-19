@@ -45,13 +45,13 @@ to net /GPIO1{SLASH}DC
 
 - stencil solder paste on front
 
-- place 2x 100k resistor (2010)
-![100k surface mount resistors](i/00-100k.png)
+- [place](i/00-100k-b.jpg) 2x 100k resistor (2010)
+![100k surface mount resistors](i/00-100k-a.jpg)
 
-- place 5x APA102 addressable RGB LED (2020)
+- [place](i/03-APA102-b.jpg) 5x APA102 addressable RGB LED (2020)
 ![APA102 datasheet](i/01-APA102.png)
 ![APA102 footprint](i/02-APA102.png)
-![APA102 from above](i/03-APA102.png)
+![APA102 from above](i/03-APA102-a.jpg)
 
 - (optional) preheat to 100 degC
 
@@ -74,7 +74,7 @@ to net /GPIO1{SLASH}DC
 
    - TP15 CPU8
 
-   - TP19 CPU7
+   - TP18 CPU7
 
    - TP20 CPU1
 
@@ -125,27 +125,27 @@ So, don't do that.
 
 - stencil solder paste on back
 
-- place 1x level shifter chip (TSSOP)
-![level shifter](i/04-TXS0104.png)
+- [place](i/04-TXS0104-b.jpg) 1x level shifter chip (TSSOP)
+![level shifter](i/04-TXS0104-a.jpg)
 
-- place 1x pushbutton switch
-![surface mount pushbutton](i/05-pbsw.png)
+- [place](i/05-pbsw-b.jpg) 1x pushbutton switch
+![surface mount pushbutton](i/05-pbsw-a.jpg)
 
 - place 1x 100 ohm resistor (2010)
 ![100 ohm surface mount resistor](i/06-100R.png)
 
-- place 6x 10k resistor (2010)
-![10k surface mount resistors](i/07-10k.png)
+- [place](i/07-10k-b.jpg) 6x 10k resistor (2010)
+![10k surface mount resistors](i/07-10k-a.jpg)
 
-- place 7x 1uF capacitor (1206)
-![1uF surface mount capacitors](i/08-1uF.png)
+- [place](i/08-1uF-b.jpg) 7x 1uF capacitor (1206)
+![1uF surface mount capacitors](i/08-1uF-a.jpg)
 
-- place 2x slide switch
-![surface mount power switch](i/09-pow_sw.png)
+- [place](i/09-pow_sw-b.jpg) 2x slide switch
+![surface mount power switch](i/09-pow_sw-a.jpg)
 ![surface mount selector switch](i/10-sel_sw.png)
 
-- place 1x battery connector
-![surface mount battery connector](i/11-batcon.png)
+- [place](i/11-batcon-a.jpg) 1x battery connector
+![surface mount battery connector](i/11-batcon-a.jpg)
 
 - (optional) preheat to 100 degC
 
