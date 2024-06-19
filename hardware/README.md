@@ -168,7 +168,7 @@ So, don't do that.
 
    - TP15 CPU8
 
-   - TP19 CPU7
+   - TP18 CPU7
 
    - TP20 CPU1
 
