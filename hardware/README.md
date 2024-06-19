@@ -125,27 +125,26 @@ So, don't do that.
 
 - stencil solder paste on back
 
-- [place](i/04-TXS0104-b.jpg) 1x level shifter chip (TSSOP)
-![level shifter](i/04-TXS0104-a.jpg)
+- [place](i/04-TXS0104-b.jpg) [1x level shifter chip](i/04-TXS0104-a.jpg) (TSSOP)
+![level shifter location](i/04-TXS0104-location.jpg)
 
-- [place](i/05-pbsw-b.jpg) 1x pushbutton switch
-![surface mount pushbutton](i/05-pbsw-a.jpg)
+- [place](i/05-pbsw-b.jpg) [1x pushbutton switch](i/05-pbsw-a.jpg)
+![pushbutton location](i/05-pbsw-location.jpg)
 
 - place 1x 100 ohm resistor (2010)
 ![100 ohm surface mount resistor](i/06-100R.png)
 
-- [place](i/07-10k-b.jpg) 6x 10k resistor (2010)
-![10k surface mount resistors](i/07-10k-a.jpg)
+- [place](i/07-10k-b.jpg) 6x [10k resistor](i/07-10k-a.jpg) (2010)
+![10k location](i/07-10k-location.jpg)
 
-- [place](i/08-1uF-b.jpg) 7x 1uF capacitor (1206)
-![1uF surface mount capacitors](i/08-1uF-a.jpg)
+- [place](i/08-1uF-b.jpg) 7x [1uF capacitor](i/08-1uF-a.jpg) (1206)
+![1uF location](i/08-1uF-location.jpg)
 
-- [place](i/09-pow_sw-b.jpg) 2x slide switch
-![surface mount power switch](i/09-pow_sw-a.jpg)
-![surface mount selector switch](i/10-sel_sw.png)
+- [place](i/09-pow_sw-b.jpg) 2x [slide switch](i/09-pow_sw-a.jpg)
+![slide switch location](i/10-slide_sw-location.jpg)
 
-- [place](i/11-batcon-a.jpg) 1x battery connector
-![surface mount battery connector](i/11-batcon-a.jpg)
+- [place](i/11-batcon-a.jpg) [1x battery connector](i/11-batcon-a.jpg)
+![battery connector location](i/11-batcon-location.jpg)
 
 - (optional) preheat to 100 degC
 
