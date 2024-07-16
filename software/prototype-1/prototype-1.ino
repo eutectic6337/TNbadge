@@ -20,7 +20,7 @@
 //#define ENABLE_SMARTLEDS
 #define ENABLE_LED
 //#define ENABLE_BLUETOOTH
-//#d//efine ENABLE_WIFI
+#define ENABLE_WIFI
 #define ENABLE_BATTERYMONITOR
 //#define ENABLE_LIGHTDARK
 
