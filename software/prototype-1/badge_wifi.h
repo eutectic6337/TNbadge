@@ -98,7 +98,7 @@ void setup_WiFi()
     for (int i = 0; i < WIFI_PASSWORD_LENGTH; i++) {
       WiFi_password[i] = WiFi_password_alphabet[random((sizeof WiFi_password_alphabet)-1)];
     }
-    WiFi_password[(sizeof WiFi_password_alphabet)-1] =0;
+    WiFi_password[(sizeof WiFi_password)-1] =0;
   }
   LOG("WiFi password:");LOGln(WiFi_password);
 
