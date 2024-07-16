@@ -24,7 +24,7 @@ Analog_Input half_battery_voltage = A2;//(Vmeasure)
 
 // E (1749) ADC: adc2_get_raw(752): adc unit not supported
 // E (1754) ADC: ADC2 is no longer supported, please use ADC1. Search for errata on espressif website for more details. You can enable ADC_ONESHOT_FORCE_USE_ADC2_ON_C3 to force use ADC2
-Analog_Input lightdark_sensor = A3;//(Vdark)
+Analog_Input lightdark_sensor = D3;//(Vdark)
 
 GPIOpin SAO_GPIO1 = D1;
 GPIOpin SAO_GPIO2 = D0;
