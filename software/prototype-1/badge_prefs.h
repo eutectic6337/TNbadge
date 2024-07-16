@@ -18,7 +18,7 @@ struct {
 void setup_prefs()
 {
   prefs.begin("badge", /*readonly=*/true);
-  conf.seed = prefs.getULong64("seed") << 1
+  conf.seed = (prefs.getULong64("seed") << 1)
     + 1
     + rtc_get_reset_reason(0);
   prefs.getString("pw", conf.pw, WIFI_PASSWORD_LENGTH);
