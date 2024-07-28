@@ -345,9 +345,20 @@ void update_city(int i) {
       }
   }
 }
+
+  const Time XLED_DELAY_ms = 200;
+  static Time xled_delay = 0;
+
 void update_city_smartLEDs() {
-  for(int i = LED_Memphis; i <= LED_Knoxville; i++) {
-    update_city(i);
+  if (millis() >= xled_delay) {
+    for (int i = LED_Memphis; i <= LED_Knoxville; i++) {
+      //update_city(i);
+      leds[i].r = random(10,200);
+      leds[i].g = random(10,200);
+      leds[i].b = random(10,200);
+    }
+    any_LED_changed = 1;
+    xled_delay = millis() + XLED_DELAY_ms;
   }
   if (any_LED_changed) {
     any_LED_changed = 0;
