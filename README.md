@@ -5,6 +5,8 @@ A blinky-light badge in the approximate shape of Tennessee
 [Join the Tennessee Cybersecurity Discord](https://discord.gg/tninfosec) and
 [participate in discussion about this badge](https://discord.com/channels/781280955667185686/1010244036612862144).
 
+[User's Guide](users-guide.md)
+
 ## Features
 
 ### human-accessible output

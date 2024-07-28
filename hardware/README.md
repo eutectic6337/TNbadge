@@ -1,5 +1,9 @@
 # TNbadge hardware
 
+## Kit
+
+[assembly guide](Kit-assembly.md)
+
 ## Printed Circuit Board
 
 - designed in Kicad
