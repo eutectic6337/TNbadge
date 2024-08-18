@@ -31,7 +31,7 @@ void setup_prefs()
   LOG("seed:");LOGln(conf.seed);
   LOG("seconds to first prefs write:");LOGln(t);
 }
-void update_prefs()
+void loop_prefs()
 {
   if (millis()/1000 >= conf.next) {
     prefs.begin("badge", /*readonly=*/false);

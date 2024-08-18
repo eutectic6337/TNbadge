@@ -13,7 +13,7 @@ void setup_SAOs()
   pinMode(SAO_SCL, OUTPUT);
   Wire.begin();
 }
-void update_SAOs()
+void loop_SAOs()
 {
   // ======== CUSTOMIZE HERE ========
 }

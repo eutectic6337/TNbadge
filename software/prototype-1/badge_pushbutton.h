@@ -6,7 +6,7 @@ unsigned pushbutton_debounced = 1;
 void setup_pushbutton() {
   pinMode(pushbutton, INPUT);
 }
-void update_pushbutton() {
+void loop_pushbutton() {
   const Time PUSHBUTTON_DEBOUNCE_ms = 20;
   static Time debounce_until;
   static unsigned prev = 0;

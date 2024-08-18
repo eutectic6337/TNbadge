@@ -119,7 +119,7 @@ void setup_WiFi()
   server.begin();
 #endif
 }
-void update_WiFi()
+void loop_WiFi()
 {
   // WiFi.scanNetworks will return the number of networks found.
   int n = WiFi.scanNetworks(/*async=*/true);
@@ -180,7 +180,7 @@ void update_WiFi()
 }
 #else
 #define setup_WiFi() ((void)0)
-#define update_WiFi() ((void)0)
+#define loop_WiFi() ((void)0)
 #endif
 
 #endif//BADGE_WIFI_H_

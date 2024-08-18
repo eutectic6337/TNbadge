@@ -6,7 +6,7 @@
 void setup_single_LED() {
   pinMode(single_LED, OUTPUT);
 }
-void update_single_LED() {
+void loop_single_LED() {
   // ======== CUSTOMIZE HERE ========
   const Time LED_BRIGHTEN_ms = 50; // per ramp-up step
   const unsigned LED_FULL = 200;
@@ -66,7 +66,7 @@ void update_single_LED() {
 }
 #else
 #define setup_single_LED() ((void)0)
-#define update_single_LED() ((void)0)
+#define loop_single_LED() ((void)0)
 #endif
 
 #endif//BADGE_LED_H_

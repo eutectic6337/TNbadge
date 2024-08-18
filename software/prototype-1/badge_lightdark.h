@@ -7,7 +7,7 @@ unsigned lightdark_smoothed;
 void setup_lightdark_sensor() {
   pinMode(lightdark_sensor, INPUT);
 }
-void update_lightdark_sensor() {
+void loop_lightdark_sensor() {
   const Time LIGHTDARK_READING_ms = 20;
   const unsigned LIGHTDARK_SMOOTH = 16;
   static Time wait_for_read;
@@ -43,7 +43,7 @@ void update_lightdark_sensor() {
 }
 #else
 #define setup_lightdark_sensor() ((void)0)
-#define update_lightdark_sensor() ((void)0)
+#define loop_lightdark_sensor() ((void)0)
 #endif
 
 #endif//BADGE_LIGHTDARK_H_

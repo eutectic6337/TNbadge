@@ -125,7 +125,7 @@ void setup_city_smartLEDs() {
 }
 
 int any_LED_changed = 0;
-void update_city(int i) {
+void loop_city(int i) {
   const Time LOG_DELAY_ms = 2000;
   static Time log_delay;
   // ======== CUSTOMIZE HERE ========
@@ -349,10 +349,10 @@ void update_city(int i) {
   const Time XLED_DELAY_ms = 200;
   static Time xled_delay = 0;
 
-void update_city_smartLEDs() {
+void loop_city_smartLEDs() {
   if (millis() >= xled_delay) {
     for (int i = LED_Memphis; i <= LED_Knoxville; i++) {
-      //update_city(i);
+      //loop_city(i);
       leds[i].r = random(10,200);
       leds[i].g = random(10,200);
       leds[i].b = random(10,200);
@@ -368,7 +368,7 @@ void update_city_smartLEDs() {
 
 #else
 #define setup_city_smartLEDs() ((void)0)
-#define update_city_smartLEDs() ((void)0)
+#define loop_city_smartLEDs() ((void)0)
 #endif
 
 #endif//BADGE_SMARTLED_H_

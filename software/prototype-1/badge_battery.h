@@ -7,7 +7,7 @@ unsigned long battery_millivolts;
 void setup_battery_monitor() {
   pinMode(half_battery_voltage, INPUT);
 }
-void update_battery_monitor() {
+void loop_battery_monitor() {
   const Time BATTERY_READING_ms = 50;
   const unsigned BATTERY_SMOOTH = 8;
   static Time wait_for_read;
@@ -43,7 +43,7 @@ void update_battery_monitor() {
 }
 #else
 #define setup_battery_monitor() ((void)0)
-#define update_battery_monitor() ((void)0)
+#define loop_battery_monitor() ((void)0)
 #endif
 
 #endif//BADGE_BATTERY_H_

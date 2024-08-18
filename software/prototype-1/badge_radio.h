@@ -12,10 +12,10 @@ void setup_radio() {
   setup_Bluetooth();
   setup_WiFi();
 }
-void update_radio() {
-  update_simpleBLE();
-  update_Bluetooth();
-  update_WiFi();
+void loop_radio() {
+  loop_simpleBLE();
+  loop_Bluetooth();
+  loop_WiFi();
 }
 
 #endif//BADGE_RADIO_H_

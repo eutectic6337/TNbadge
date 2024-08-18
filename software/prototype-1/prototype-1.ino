@@ -12,7 +12,7 @@
 //
 // 2. each feature uses a state machine,
 //    initialized in setup_FEATURE(),
-//    maintained in update_FEATURE()
+//    maintained in loop_FEATURE()
 //
 
 /* remove leading // to enable; add // to disable feature */
@@ -71,15 +71,15 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  update_prefs();
+  loop_prefs();
 
-  update_battery_monitor();
-  update_lightdark_sensor();
-  update_pushbutton();
+  loop_battery_monitor();
+  loop_lightdark_sensor();
+  loop_pushbutton();
 
-  update_single_LED();
-  update_city_smartLEDs();
+  loop_single_LED();
+  loop_city_smartLEDs();
 
-  update_SAOs();
-  update_radio();
+  loop_SAOs();
+  loop_radio();
 }

@@ -10,7 +10,7 @@ void setup_simpleBLE()
 {
   ble.begin("ESP32 SimpleBLE");
 }
-void update_simpleBLE()
+void loop_simpleBLE()
 {
     String out = "BLE32 name: ";
     out += String(millis() / 1000);
@@ -19,7 +19,7 @@ void update_simpleBLE()
 }
 #else
 #define setup_simpleBLE() ((void)0)
-#define update_simpleBLE() ((void)0)
+#define loop_simpleBLE() ((void)0)
 #endif
 
 
@@ -65,13 +65,13 @@ void setup_Bluetooth()
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
 }
-void update_Bluetooth()
+void loop_Bluetooth()
 {
   // ======== CUSTOMIZE Bluetooth HERE ========
 }
 #else
 #define setup_Bluetooth() ((void)0)
-#define update_Bluetooth() ((void)0)
+#define loop_Bluetooth() ((void)0)
 #endif
 
 #endif//BADGE_BLUETOOTH_H_
