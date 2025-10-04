@@ -2,7 +2,9 @@
 
 A blinky-light badge in the approximate shape of Tennessee
 
-[PCB front](hardware/i/bare_PCB-front.jpg) [PCB back](hardware/i/bare_PCB-back.jpg)
+![PCB front](hardware/i/bare_PCB-front.jpg)
+
+![PCB back](hardware/i/bare_PCB-back.jpg)
 
 [Join the Tennessee Cybersecurity Discord](https://discord.gg/tninfosec) and
 [participate in discussion about this badge](https://discord.com/channels/781280955667185686/1010244036612862144).
